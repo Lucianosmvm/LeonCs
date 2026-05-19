@@ -294,8 +294,15 @@ function _renderSubjectTabs(containerId, activeId, onSelect) {
   el.innerHTML = SUBJECTS.map(s => `
     <button class="subj-tab${s.id === activeId ? ' active' : ''}"
             style="--subj-color:${s.color}"
-            onclick="(${onSelect.toString()})('${s.id}');document.querySelectorAll('#${containerId} .subj-tab').forEach(b=>b.classList.remove('active'));this.classList.add('active')">
+            data-sid="${s.id}">
       ${s.icon} ${s.label}
     </button>
   `).join('');
+  el.querySelectorAll('.subj-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      el.querySelectorAll('.subj-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      onSelect(btn.dataset.sid);
+    });
+  });
 }
