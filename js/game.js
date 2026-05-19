@@ -14,7 +14,9 @@ function openMission(i) {
   const _m = MISSIONS[i];
   if (!_m.free && !S.premium) { go('pw'); return; }
   if (S.hearts <= 0 && !S.premium) { showNoH(); return; }
-  SEL.mission = i;
+  SEL.mission    = i;
+  SEL.missionObj = null;
+  SEL.subjectId  = 'csharp';
   const m = MISSIONS[i];
   document.getElementById('it-num').textContent       = `MISSÃO ${String(i + 1).padStart(2, '0')} / ${MISSIONS.length}`;
   document.getElementById('it-hdr-title').textContent = m.title;
@@ -33,6 +35,10 @@ function openMission(i) {
 
 // ── Iniciar / renderizar lição ──
 
+function _getActiveMission() {
+  return SEL.missionObj || MISSIONS[SEL.mission];
+}
+
 function startLesson() {
   SEL.step = 0; SEL.correct = 0; SEL.wrong = 0; SEL.xpGained = 0;
   SEL.answered = false; SEL.chosen = null; SEL.combo = 0;
@@ -41,7 +47,7 @@ function startLesson() {
 }
 
 function renderStep() {
-  const m    = MISSIONS[SEL.mission];
+  const m    = _getActiveMission();
   const step = m.steps[SEL.step];
   const pct  = (SEL.step / m.steps.length) * 100;
 
@@ -127,7 +133,7 @@ function selOpt(i) {
 function checkAns() {
   if (SEL.answered) return;
   SEL.answered = true;
-  const step = MISSIONS[SEL.mission].steps[SEL.step];
+  const step = _getActiveMission().steps[SEL.step];
   let ok = false;
 
   if (step.type === 'fill') {
@@ -212,11 +218,17 @@ function launchConfetti() {
 function nextStep() {
   if (S.hearts <= 0) { showNoH(); return; }
   SEL.step++;
-  const m = MISSIONS[SEL.mission];
+  const m = _getActiveMission();
   if (SEL.step >= m.steps.length) {
     checkStreak();
-    if (!S.done.includes(m.id)) {
-      S.done.push(m.id);
+    const subjectId = SEL.subjectId || 'csharp';
+    if (subjectId === 'csharp') {
+      if (!S.done.includes(m.id)) {
+        S.done.push(m.id);
+        S.xp += 50; SEL.xpGained += 50;
+      }
+    } else {
+      markSubjectMissionDone(m._firestoreId || m.id);
       S.xp += 50; SEL.xpGained += 50;
     }
     saveS();
@@ -243,12 +255,24 @@ function showResult(win) {
 
   const next = SEL.mission + 1;
   const btn  = document.getElementById('rs-next');
-  if (next < MISSIONS.length) {
-    btn.textContent = `▶ PRÓXIMA: ${MISSIONS[next].title}`;
-    btn.onclick = () => openMission(next);
+  const subjectId = SEL.subjectId || 'csharp';
+  if (subjectId === 'csharp') {
+    if (next < MISSIONS.length) {
+      btn.textContent = `▶ PRÓXIMA: ${MISSIONS[next].title}`;
+      btn.onclick = () => openMission(next);
+    } else {
+      btn.textContent = '🏆 VER MISSÕES';
+      btn.onclick = () => go('mp');
+    }
   } else {
-    btn.textContent = '🏆 VER MISSÕES';
-    btn.onclick = () => go('mp');
+    const all = SEL.allMissions || [];
+    if (next < all.length) {
+      btn.textContent = `▶ PRÓXIMA: ${all[next].title || 'Atividade ' + (next+1)}`;
+      btn.onclick = () => { const doneLst = SEL.subjectDoneLst || []; openSubjectMission(all[next], next, all, doneLst); };
+    } else {
+      btn.textContent = '🏆 VER ATIVIDADES';
+      btn.onclick = () => go('mp');
+    }
   }
   go('rs');
   if (win && SEL.wrong === 0) setTimeout(launchConfetti, 300);

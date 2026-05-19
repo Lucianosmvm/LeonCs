@@ -16,7 +16,7 @@ async function loadFirebase() {
             updateProfile, sendPasswordResetEmail, deleteUser }
           = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
     const { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp,
-            collection, query, orderBy, limit, getDocs }
+            collection, query, orderBy, limit, getDocs, addDoc, where, onSnapshot, deleteField }
           = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
 
     const app = initializeApp(FIREBASE_CONFIG);
@@ -28,7 +28,7 @@ async function loadFirebase() {
       signInWithPopup, GoogleAuthProvider, signOut,
       updateProfile, sendPasswordResetEmail, deleteUser,
       doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp,
-      collection, query, orderBy, limit, getDocs
+      collection, query, orderBy, limit, getDocs, addDoc, where, onSnapshot, deleteField
     };
 
     // AUTH STATE OBSERVER — persiste login entre reloads
@@ -41,7 +41,7 @@ async function loadFirebase() {
         hideLoading();
         regenH(); checkStreakLoss(); _saveLocal();
         await checkPaymentReturn();
-        go('hm');
+        if (S.role === 'teacher') { go('tc'); } else { go('sb'); }
       } else {
         window._currentUser = null;
         go('ob');
@@ -54,11 +54,11 @@ async function loadFirebase() {
     hideLoading();
     window._currentUser = { uid: 'demo', displayName: 'Leon Demo', email: 'demo@leoncs.app', photoURL: null };
     regenH(); checkStreakLoss(); _saveLocal();
-    go('hm');
+    go('sb');
   }
 }
 
-async function _ensureUserDoc(user) {
+async function _ensureUserDoc(user, role) {
   if (!_fbDb || !window._fb) return;
   const ref  = window._fb.doc(_fbDb, 'users', user.uid);
   const snap = await window._fb.getDoc(ref);
@@ -67,6 +67,7 @@ async function _ensureUserDoc(user) {
       name: user.displayName || 'Agente', email: user.email,
       xp: 0, hearts: MAX_H, streak: 0, lastPlayed: null,
       done: [], correct: 0, premium: false, achievements: {},
+      role: role || 'student', subjectDone: {},
       createdAt: window._fb.serverTimestamp(),
       lastLogin:  window._fb.serverTimestamp(),
     });
@@ -90,6 +91,8 @@ async function _loadCloud(uid) {
       S.premium       = d.premium       ?? false;
       S.achievements  = d.achievements  ?? {};
       S.createdAt     = d.createdAt?.toDate?.()?.toLocaleDateString('pt-BR') ?? '—';
+      S.role          = d.role          ?? 'student';
+      S.subjectDone   = d.subjectDone   ?? {};
     }
   } catch(e) { console.warn('Offline — usando dados locais'); }
 }
@@ -103,6 +106,7 @@ function syncCloud() {
     lastPlayed: S.lastPlayed, done: S.done,
     correct: S.correct || 0, premium: S.premium,
     achievements: S.achievements || {},
+    subjectDone: S.subjectDone || {},
     lastLogin: window._fb.serverTimestamp(),
   }).catch(() => {});
   // Atualiza entrada pública no ranking (só dados não-sensíveis)
@@ -123,4 +127,54 @@ async function loadRanking() {
     const snap = await window._fb.getDocs(q);
     return snap.docs.map(d => ({ uid: d.id, ...d.data() }));
   } catch(e) { console.warn('Ranking indisponível:', e.message); return []; }
+}
+
+// ── Missões criadas pelo Professor (Firestore) ──
+
+async function loadTeacherMissions(subjectId) {
+  if (!_fbDb || !window._fb) return [];
+  try {
+    const q = window._fb.query(
+      window._fb.collection(_fbDb, 'subjects', subjectId, 'missions'),
+      window._fb.orderBy('order', 'asc')
+    );
+    const snap = await window._fb.getDocs(q);
+    return snap.docs.map(d => ({ _firestoreId: d.id, ...d.data() }));
+  } catch(e) { console.warn('Missões professor indisponível:', e.message); return []; }
+}
+
+async function saveTeacherMission(subjectId, missionData) {
+  if (!_fbDb || !window._fb) return null;
+  const uid = window._currentUser?.uid;
+  if (!uid) return null;
+  const colRef = window._fb.collection(_fbDb, 'subjects', subjectId, 'missions');
+  if (missionData._firestoreId) {
+    const ref = window._fb.doc(_fbDb, 'subjects', subjectId, 'missions', missionData._firestoreId);
+    const { _firestoreId, ...data } = missionData;
+    await window._fb.updateDoc(ref, { ...data, updatedAt: window._fb.serverTimestamp(), updatedBy: uid });
+    return missionData._firestoreId;
+  } else {
+    const { _firestoreId, ...data } = missionData;
+    const ref = await window._fb.addDoc(colRef, { ...data, createdAt: window._fb.serverTimestamp(), createdBy: uid });
+    return ref.id;
+  }
+}
+
+async function deleteTeacherMission(subjectId, firestoreId) {
+  if (!_fbDb || !window._fb) return;
+  await window._fb.deleteDoc(window._fb.doc(_fbDb, 'subjects', subjectId, 'missions', firestoreId));
+}
+
+async function loadStudentList() {
+  if (!_fbDb || !window._fb) return [];
+  try {
+    const q = window._fb.query(
+      window._fb.collection(_fbDb, 'users'),
+      window._fb.where('role', '==', 'student'),
+      window._fb.orderBy('xp', 'desc'),
+      window._fb.limit(100)
+    );
+    const snap = await window._fb.getDocs(q);
+    return snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+  } catch(e) { console.warn('Lista de alunos indisponível:', e.message); return []; }
 }

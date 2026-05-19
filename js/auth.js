@@ -35,21 +35,25 @@ function _clearAuthErrs() {
 async function doRegister() {
   if (!_fbAuth || !window._fb) { showToast('Configure o Firebase primeiro!', 'err'); return; }
   _clearAuthErrs();
-  const name  = document.getElementById('reg-name').value.trim();
-  const email = document.getElementById('reg-email').value.trim();
-  const pass  = document.getElementById('reg-pass').value;
+  const name       = document.getElementById('reg-name').value.trim();
+  const email      = document.getElementById('reg-email').value.trim();
+  const pass       = document.getElementById('reg-pass').value;
+  const teacherInp = document.getElementById('reg-teacher-code');
+  const teacherCode = teacherInp ? teacherInp.value.trim() : '';
   let valid = true;
   if (!name)         { document.getElementById('reg-name-err').textContent  = 'Nome obrigatório';    document.getElementById('reg-name').classList.add('err');  valid = false; }
   if (!email)        { document.getElementById('reg-email-err').textContent = 'E-mail obrigatório';  document.getElementById('reg-email').classList.add('err'); valid = false; }
   if (pass.length<6) { document.getElementById('reg-pass-err').textContent  = 'Mín. 6 caracteres';  document.getElementById('reg-pass').classList.add('err');  valid = false; }
   if (!valid) return;
+  const role = (teacherCode === TEACHER_CODE) ? 'teacher' : 'student';
   showLoading('CRIANDO CONTA...');
   try {
     const cred = await window._fb.createUserWithEmailAndPassword(_fbAuth, email, pass);
     await window._fb.updateProfile(cred.user, { displayName: name });
-    await _ensureUserDoc(cred.user);
-    showToast('Conta criada! Bem-vindo, ' + name + '!', 'ok');
-    // onAuthStateChanged dispara automaticamente → vai para go('hm')
+    await _ensureUserDoc(cred.user, role);
+    S.role = role;
+    showToast('Conta criada! Bem-vindo' + (role === 'teacher' ? ', Professor ' : ', ') + name + '!', 'ok');
+    // onAuthStateChanged dispara automaticamente
   } catch(e) {
     document.getElementById('reg-email-err').textContent = _fbErrMsg(e.code);
     hideLoading();
@@ -194,7 +198,8 @@ function refreshProfile() {
   document.getElementById('pr-xp').textContent      = S.xp + ' XP';
   document.getElementById('pr-lv').textContent      = getLv() + ' — ' + getLvName();
   document.getElementById('pr-streak').textContent  = S.streak + ' dias 🎯';
-  document.getElementById('pr-ms').textContent      = S.done.length + ' / ' + MISSIONS.length;
+  const _prTotal = S.done.length + Object.values(S.subjectDone || {}).reduce((a,v)=>a+v.length,0);
+  document.getElementById('pr-ms').textContent      = _prTotal + ' missões completas';
   document.getElementById('pr-correct').textContent = S.correct || 0;
   document.getElementById('pr-since').textContent   = S.createdAt || '—';
   const upBtn = document.getElementById('pr-upgrade-btn');

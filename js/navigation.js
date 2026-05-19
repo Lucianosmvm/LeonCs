@@ -5,27 +5,37 @@
 
 function go(id) {
   if (id === 'pw' && S.premium) { showToast('Você já é Premium! 👑', 'ok'); id = 'hm'; }
+  if (id === 'hm' && S.role === 'teacher') { id = 'tc'; }
   document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
-  document.getElementById(id).classList.add('on');
+  const el = document.getElementById(id);
+  if (!el) { console.warn('Tela não encontrada:', id); return; }
+  el.classList.add('on');
   if (id === 'hm') refreshHome();
-  if (id === 'mp') refreshMap();
+  if (id === 'sb') refreshSubjectSelect();
+  if (id === 'mp') { /* refreshSubjectMap já chamado em openSubject ou refreshMap para C# */ if (!SEL.subjectId || SEL.subjectId === 'csharp') refreshMap(); }
   if (id === 'pr') refreshProfile();
   if (id === 'rk') refreshRank();
   if (id === 'ac') renderAchievements();
+  if (id === 'tc') refreshTeacher();
+  if (id === 'tc-stats') refreshTcStats();
   // Desktop: telas de auth ficam fullscreen, as demais mostram sidebars
   const authScreens = ['sp', 'ob', 'au'];
+  const teacherOnlyScreens = ['tc', 'tc-edit', 'tc-stats'];
   document.body.classList.toggle('desk-auth', authScreens.includes(id));
+  document.body.classList.toggle('desk-teacher', teacherOnlyScreens.includes(id));
   // Destaca link ativo na nav desktop
-  const navMap = { hm: 'dn-hm', mp: 'dn-mp', pr: 'dn-pr', pw: 'dn-pw', rk: 'dn-rk' };
+  const navMap = { hm: 'dn-hm', sb: 'dn-sb', mp: 'dn-mp', pr: 'dn-pr', pw: 'dn-pw', rk: 'dn-rk', tc: 'dn-tc' };
   document.querySelectorAll('.dn-link').forEach(l => l.classList.remove('active'));
   const activeLink = document.getElementById(navMap[id]);
   if (activeLink) activeLink.classList.add('active');
-  refreshDeskSidebar();
+  if (!teacherOnlyScreens.includes(id)) refreshDeskSidebar();
 }
 
 // ── Sidebar desktop direita ──
 
 function refreshDeskSidebar() {
+  const tcLink = document.getElementById('dn-tc');
+  if (tcLink) tcLink.style.display = S.role === 'teacher' ? 'flex' : 'none';
   const _u = window._currentUser;
   if (_u) {
     const ini = (_u.displayName || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
@@ -38,7 +48,8 @@ function refreshDeskSidebar() {
   }
   const xpEl = document.getElementById('da-xp');    if (xpEl) xpEl.textContent = S.xp;
   const lvEl = document.getElementById('da-lv');    if (lvEl) lvEl.textContent = getLv();
-  const msEl = document.getElementById('da-ms');    if (msEl) msEl.textContent = S.done.length + '/6';
+  const _totalDone = S.done.length + Object.values(S.subjectDone || {}).reduce((a,v)=>a+v.length,0);
+  const msEl = document.getElementById('da-ms');    if (msEl) msEl.textContent = _totalDone;
   const stEl = document.getElementById('da-streak'); if (stEl) stEl.textContent = S.streak;
   renderH('da-hearts');
 }
@@ -52,7 +63,8 @@ function refreshHome() {
   renderH('hm-hearts');
   document.getElementById('hm-xp').textContent     = S.xp;
   document.getElementById('hm-lv').textContent     = getLv();
-  document.getElementById('hm-ms').textContent     = S.done.length + '/6';
+  const _hmTotal = S.done.length + Object.values(S.subjectDone || {}).reduce((a,v)=>a+v.length,0);
+  document.getElementById('hm-ms').textContent     = _hmTotal;
   document.getElementById('hm-streak').textContent = S.streak + (S.streak === 1 ? ' DIA' : ' DIAS');
   document.getElementById('hm-badge').textContent  = `// ${getLvName()} · NÍVEL ${getLv()}`;
 
@@ -70,7 +82,7 @@ function refreshHome() {
   }
 
   const _mb = document.getElementById('hm-btn-mission');
-  if (_mb) _mb.innerHTML = S.done.length > 0 ? '▶ &nbsp;CONTINUAR MISSÃO' : '▶ &nbsp;INICIAR MISSÃO';
+  if (_mb) { _mb.innerHTML = S.done.length > 0 ? '▶ &nbsp;CONTINUAR' : '▶ &nbsp;INICIAR'; _mb.onclick = () => go('sb'); }
 
   const _pb = document.getElementById('hm-premium-banner');
   if (_pb) _pb.style.display = S.premium ? 'none' : 'flex';
@@ -122,6 +134,10 @@ function refreshMap() {
   document.getElementById('lv-label').textContent   = `${getLvName()} · NV ${getLv()}`;
   document.getElementById('lv-xp').textContent      = `${getLvXp()} / ${XP_LV} XP`;
   document.getElementById('lv-fill').style.width    = getLvPct() + '%';
+  const subjLabel = document.getElementById('mp-subj-label');
+  if (subjLabel && (!SEL.subjectId || SEL.subjectId === 'csharp')) { subjLabel.textContent = 'C#'; }
+  const subjIcon = document.getElementById('mp-subj-icon');
+  if (subjIcon && (!SEL.subjectId || SEL.subjectId === 'csharp')) { subjIcon.textContent = '🎮'; }
 
   const list = document.getElementById('mlist');
   list.innerHTML = '';
