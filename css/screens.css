@@ -414,6 +414,9 @@ pre.code-pre .mt{color:#80cbc4}
   body.desk-auth #desk-nav,
   body.desk-auth #desk-aside{display:none!important}
 
+  body.desk-teacher #desk-aside{display:none!important}
+  body.desk-teacher .scr.on{grid-column:2/-1}
+
   .hm-topbar{display:none}
 
   .hm-body,.rs-body,.it-body,.au-body,.pw-body,.pr-body,.ob-body{
