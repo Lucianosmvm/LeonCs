@@ -404,10 +404,20 @@ pre.code-pre .mt{color:#80cbc4}
     grid-row:1;
     border-left:1px solid var(--bd);
     border-right:1px solid var(--bd);
-    display:none;
+    display:flex;
+    visibility:hidden;
+    pointer-events:none;
+    position:absolute;
+    width:0;
+    overflow:hidden;
   }
   .scr.on{
     display:flex;
+    visibility:visible;
+    pointer-events:auto;
+    position:relative;
+    width:100%;
+    overflow:hidden;
   }
 
   body.desk-auth .scr.on{
