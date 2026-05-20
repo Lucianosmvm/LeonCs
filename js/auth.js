@@ -127,7 +127,7 @@ async function loginGoogle() {
 async function doLogout() {
   if (!confirm('Deseja sair da conta?')) return;
   window._loggingOut = true;
-  if (_fbAuth && window._fb) await window._fb.signOut(_fbAuth);
+  try { if (_fbAuth && window._fb) await window._fb.signOut(_fbAuth); } catch(e) {}
   window._currentUser = null;
   S = defState();
   _saveLocal();

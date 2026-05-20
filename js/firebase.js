@@ -33,20 +33,22 @@ async function loadFirebase() {
     };
 
     // AUTH STATE OBSERVER — persiste login entre reloads
+    let _authGen = 0;
     onAuthStateChanged(_fbAuth, async (user) => {
       hideLoading();
       if (user) {
-        if (window._loggingOut) return;
+        const gen = ++_authGen;
         window._currentUser = user;
         showLoading('SINCRONIZANDO...');
         await _loadCloud(user.uid);
         hideLoading();
-        if (window._loggingOut) return;
+        if (gen !== _authGen || window._loggingOut) return;
         regenH(); checkStreakLoss(); _saveLocal();
         await checkPaymentReturn();
-        if (window._loggingOut) return;
+        if (gen !== _authGen || window._loggingOut) return;
         if (S.role === 'teacher') { go('tc'); } else { go('sb'); }
       } else {
+        ++_authGen;
         window._loggingOut = false;
         window._currentUser = null;
         S = defState();

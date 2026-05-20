@@ -20,7 +20,7 @@ body{font-family:'Barlow',sans-serif;color:var(--text);display:flex;justify-cont
   display:none;flex-direction:column;
   width:100%;max-width:460px;height:100dvh;
   overflow:hidden;background:var(--bg);
-  position:fixed;top:0;left:0;right:0;bottom:0;margin:0 auto;
+  position:relative;flex-shrink:0;
 }
 .scr.on{display:flex;animation:fi .25s ease}
 @keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
