@@ -51,5 +51,20 @@ service cloud.firestore {
         && request.resource.data.uid == request.auth.uid;
       allow update, delete: if false;
     }
+
+    // ── Turmas ──
+    match /classrooms/{classroomId} {
+      // Leitura: qualquer autenticado (aluno precisa buscar por código no cadastro)
+      allow read: if request.auth != null;
+
+      // Criação: só professor, e o teacherUid deve ser o próprio uid
+      allow create: if request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher'
+        && request.resource.data.teacherUid == request.auth.uid;
+
+      // Atualização/deleção: só o professor dono da turma
+      allow update, delete: if request.auth != null
+        && resource.data.teacherUid == request.auth.uid;
+    }
   }
 }
