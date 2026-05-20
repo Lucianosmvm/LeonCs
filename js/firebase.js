@@ -44,7 +44,12 @@ async function loadFirebase() {
         if (S.role === 'teacher') { go('tc'); } else { go('sb'); }
       } else {
         window._currentUser = null;
-        go('ob');
+        S = defState();
+        _saveLocal();
+        document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
+        document.getElementById('ob').classList.add('on');
+        document.body.classList.add('desk-auth');
+        document.body.classList.remove('desk-teacher');
       }
     });
 

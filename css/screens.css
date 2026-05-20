@@ -410,6 +410,8 @@ pre.code-pre .mt{color:#80cbc4}
     grid-column:1/-1;
     border-left:none;
     border-right:none;
+    max-width:100%;
+    z-index:10;
   }
   body.desk-auth #desk-nav,
   body.desk-auth #desk-aside{display:none!important}
