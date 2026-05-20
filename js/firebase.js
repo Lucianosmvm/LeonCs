@@ -17,7 +17,7 @@ async function loadFirebase() {
             updateProfile, sendPasswordResetEmail, deleteUser }
           = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
     const { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp,
-            collection, query, orderBy, limit, getDocs, addDoc, where, onSnapshot, deleteField }
+            collection, query, orderBy, limit, getDocs, addDoc, where, onSnapshot, deleteField, increment }
           = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
 
     const app = initializeApp(FIREBASE_CONFIG);
@@ -29,7 +29,7 @@ async function loadFirebase() {
       signInWithPopup, GoogleAuthProvider, signOut,
       updateProfile, sendPasswordResetEmail, deleteUser,
       doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp,
-      collection, query, orderBy, limit, getDocs, addDoc, where, onSnapshot, deleteField
+      collection, query, orderBy, limit, getDocs, addDoc, where, onSnapshot, deleteField, increment
     };
 
     // AUTH STATE OBSERVER — persiste login entre reloads
@@ -160,6 +160,7 @@ async function saveTeacherMission(subjectId, missionData) {
   const uid = window._currentUser?.uid;
   if (!uid) return null;
   const colRef = window._fb.collection(_fbDb, 'subjects', subjectId, 'missions');
+  const subjRef = window._fb.doc(_fbDb, 'subjects', subjectId);
   if (missionData._firestoreId) {
     const ref = window._fb.doc(_fbDb, 'subjects', subjectId, 'missions', missionData._firestoreId);
     const { _firestoreId, ...data } = missionData;
@@ -168,13 +169,16 @@ async function saveTeacherMission(subjectId, missionData) {
   } else {
     const { _firestoreId, ...data } = missionData;
     const ref = await window._fb.addDoc(colRef, { ...data, createdAt: window._fb.serverTimestamp(), createdBy: uid });
+    await window._fb.updateDoc(subjRef, { missionCount: window._fb.increment(1) });
     return ref.id;
   }
 }
 
 async function deleteTeacherMission(subjectId, firestoreId) {
   if (!_fbDb || !window._fb) return;
+  const subjRef = window._fb.doc(_fbDb, 'subjects', subjectId);
   await window._fb.deleteDoc(window._fb.doc(_fbDb, 'subjects', subjectId, 'missions', firestoreId));
+  await window._fb.updateDoc(subjRef, { missionCount: window._fb.increment(-1) });
 }
 
 async function loadDynamicSubjects() {
@@ -185,15 +189,9 @@ async function loadDynamicSubjects() {
       window._fb.orderBy('createdAt', 'asc')
     );
     const snap = await window._fb.getDocs(q);
-    const subjects = [];
-    for (const d of snap.docs) {
-      // só inclui se tiver pelo menos 1 missão
-      const missSnap = await window._fb.getDocs(
-        window._fb.collection(_fbDb, 'subjects', d.id, 'missions')
-      );
-      if (!missSnap.empty) subjects.push({ id: d.id, ...d.data() });
-    }
-    return subjects;
+    return snap.docs
+      .filter(d => (d.data().missionCount || 0) > 0)
+      .map(d => ({ id: d.id, ...d.data() }));
   } catch(e) { console.warn('Matérias indisponível:', e.message); return []; }
 }
 

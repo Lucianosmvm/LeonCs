@@ -22,7 +22,8 @@ async function refreshSubjectSelect() {
 
   grid.innerHTML = '<div class="tc-loading">// CARREGANDO MATÉRIAS...</div>';
 
-  // Carrega matérias do Firestore com pelo menos 1 missão
+  // Sempre busca frescos — invalida cache de missões também
+  _teacherMissionsCache = {};
   _dynamicSubjects = await loadDynamicSubjects();
 
   const done = S.subjectDone || {};
@@ -109,8 +110,10 @@ async function refreshSubjectMap() {
 
   allMissions.forEach((m, i) => {
     if (!m) return;
-    const done       = doneLst.includes(m.id ?? i);
-    const seqLocked  = i > 0 && !doneLst.includes((allMissions[i-1]?.id) ?? (i-1));
+    const mId        = m._firestoreId || m.id;
+    const prevId     = i > 0 ? (allMissions[i-1]?._firestoreId || allMissions[i-1]?.id) : null;
+    const done       = doneLst.includes(mId);
+    const seqLocked  = i > 0 && !doneLst.includes(prevId);
     const premLocked = !m.free && !S.premium;
     const cl    = 'mcard' + (done ? ' done' : seqLocked ? ' lck' : premLocked ? ' plck' : ' avail');
     const st    = done ? 'done' : seqLocked ? 'lck' : premLocked ? 'plck' : 'avail';
@@ -126,19 +129,19 @@ async function refreshSubjectMap() {
         <div class="mxpbar"><div class="mxpbar-f" style="width:${done ? 100 : 0}%"></div></div>
       </div>
       <div class="mst ${st}">${stTxt}</div>`;
-    if (!seqLocked || done) card.onclick = () => openSubjectMission(m, i, allMissions, doneLst);
+    if (!seqLocked || done) card.onclick = () => openSubjectMission(m, i, allMissions, doneLst, mId);
     list.appendChild(card);
   });
 }
 
-function openSubjectMission(m, i, allMissions, doneLst) {
+function openSubjectMission(m, i, allMissions, doneLst, mId) {
   if (!m.free && !S.premium) { go('pw'); return; }
   if (S.hearts <= 0 && !S.premium) { showNoH(); return; }
 
-  SEL.mission      = i;
-  SEL.subjectId    = _currentSubjectId;
-  SEL.missionObj   = m;
-  SEL.allMissions  = allMissions;
+  SEL.mission        = i;
+  SEL.subjectId      = _currentSubjectId;
+  SEL.missionObj     = { ...m, _resolvedId: mId || m._firestoreId || m.id };
+  SEL.allMissions    = allMissions;
   SEL.subjectDoneLst = doneLst;
 
   document.getElementById('it-num').textContent       = `ATIVIDADE ${String(i+1).padStart(2,'0')} / ${allMissions.length}`;

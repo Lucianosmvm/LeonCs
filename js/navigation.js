@@ -5,7 +5,7 @@
 
 function go(id) {
   if (id === 'pw' && S.premium) { showToast('Você já é Premium! 👑', 'ok'); id = 'hm'; }
-  if (id === 'hm' && S.role === 'teacher') { id = 'tc'; }
+  if (S.role === 'teacher' && ['hm', 'sb'].includes(id)) { id = 'tc'; }
   document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
   const el = document.getElementById(id);
   if (!el) { console.warn('Tela não encontrada:', id); return; }

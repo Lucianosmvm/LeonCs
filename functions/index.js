@@ -12,8 +12,20 @@ admin.initializeApp();
 
 setGlobalOptions({ region: 'us-central1' });
 
-const STRIPE_SECRET     = defineSecret('STRIPE_SECRET_KEY');
+const STRIPE_SECRET      = defineSecret('STRIPE_SECRET_KEY');
 const STRIPE_WEBHOOK_SIG = defineSecret('STRIPE_WEBHOOK_SECRET');
+const TEACHER_SECRET     = defineSecret('TEACHER_CODE');
+
+// ── Valida código de professor (server-side) ──
+exports.validateTeacherCode = onRequest(
+  { secrets: [TEACHER_SECRET], cors: ['https://leoncs.com.br', 'https://leon-cs.web.app'] },
+  (req, res) => {
+    if (req.method !== 'POST') return res.status(405).send('Method Not Allowed');
+    const { code } = req.body;
+    if (!code) return res.status(400).json({ valid: false });
+    res.json({ valid: code === TEACHER_SECRET.value() });
+  }
+);
 
 // ── Webhook principal ──
 exports.stripeWebhook = onRequest(

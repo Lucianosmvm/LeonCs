@@ -6,6 +6,7 @@
 // ── Intro da missão ──
 
 function openMission(i) {
+  if (!MISSIONS[i]) return;
   const alreadyDone = S.done.includes(MISSIONS[i].id);
   if (!alreadyDone && i > 0 && !S.done.includes(MISSIONS[i - 1].id)) {
     showToast('Complete a missão anterior primeiro! 🔒', 'bad');
@@ -47,6 +48,7 @@ function startLesson() {
 }
 
 function renderStep() {
+  if (S.hearts <= 0 && !S.premium) { showNoH(); return; }
   const m    = _getActiveMission();
   const step = m.steps[SEL.step];
   const pct  = (SEL.step / m.steps.length) * 100;
@@ -138,7 +140,7 @@ function checkAns() {
 
   if (step.type === 'fill') {
     const val = document.getElementById('fill-inp').value.trim();
-    ok = val.toLowerCase() === step.ans.toLowerCase();
+    ok = val.trim().toLowerCase() === step.ans.trim().toLowerCase();
     document.getElementById('fill-inp').className = 'fill-inp ' + (ok ? 'ok' : 'bad');
   } else {
     ok = step.opts[SEL.chosen]?.ok === true;
@@ -216,7 +218,6 @@ function launchConfetti() {
 // ── Próximo passo / fim ──
 
 function nextStep() {
-  if (S.hearts <= 0) { showNoH(); return; }
   SEL.step++;
   const m = _getActiveMission();
   if (SEL.step >= m.steps.length) {
@@ -228,7 +229,7 @@ function nextStep() {
         S.xp += 50; SEL.xpGained += 50;
       }
     } else {
-      const mid = m._firestoreId || m.id;
+      const mid = m._resolvedId || m._firestoreId || m.id;
       markSubjectMissionDone(mid);
       saveMissionResult(subjectId, mid, SEL.correct, SEL.wrong);
       S.xp += 50; SEL.xpGained += 50;
@@ -281,8 +282,7 @@ function showResult(win) {
 }
 
 function retryLesson() {
-  S.hearts = Math.min(S.hearts + 2, MAX_H);
-  saveS();
+  if (S.hearts <= 0 && !S.premium) { showNoH(); return; }
   startLesson();
 }
 

@@ -69,7 +69,7 @@ function initApp() {
 
 window.addEventListener('DOMContentLoaded', () => {
   if (_isIos() && !_isStandalone()) _showInstallBanner();
-  setTimeout(initApp, 1400);
+  initApp();
 });
 
 // Esconde o loading caso o usuário volte da tela de pagamento (bfcache restore)

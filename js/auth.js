@@ -45,9 +45,23 @@ async function doRegister() {
   if (!email)        { document.getElementById('reg-email-err').textContent = 'E-mail obrigatório';  document.getElementById('reg-email').classList.add('err'); valid = false; }
   if (pass.length<6) { document.getElementById('reg-pass-err').textContent  = 'Mín. 6 caracteres';  document.getElementById('reg-pass').classList.add('err');  valid = false; }
   if (!valid) return;
-  const role = (teacherCode === TEACHER_CODE) ? 'teacher' : 'student';
   showLoading('CRIANDO CONTA...');
   try {
+    let role = 'student';
+    if (teacherCode) {
+      const resp = await fetch(VALIDATE_TEACHER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: teacherCode }),
+      });
+      const data = await resp.json();
+      if (!data.valid) {
+        document.getElementById('reg-name-err').textContent = 'Código de professor inválido.';
+        hideLoading();
+        return;
+      }
+      role = 'teacher';
+    }
     const cred = await window._fb.createUserWithEmailAndPassword(_fbAuth, email, pass);
     await window._fb.updateProfile(cred.user, { displayName: name });
     await _ensureUserDoc(cred.user, role);

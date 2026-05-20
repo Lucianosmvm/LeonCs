@@ -24,8 +24,8 @@ const REGEN_MS = 20 * 60 * 1000;
 const XP_LV    = 200;
 const LV_NAMES = ['RECRUTA', 'AGENTE', 'VETERANO', 'ESPECIALISTA', 'MESTRE', 'LENDA'];
 
-// Código de acesso para Professor
-const TEACHER_CODE = 'PROF2025';
+// URL da Cloud Function que valida código de professor
+const VALIDATE_TEACHER_URL = 'https://us-central1-leon-cs.cloudfunctions.net/validateTeacherCode';
 
 // Matérias disponíveis
 const SUBJECTS = [
