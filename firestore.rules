@@ -1,0 +1,55 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Usuários ──
+    match /users/{uid} {
+      // Leitura: próprio usuário ou admin (Cloud Functions usam admin SDK — bypass)
+      allow read: if request.auth != null && request.auth.uid == uid;
+
+      // Criação: só o próprio usuário, sem premium e sem role teacher no payload
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.premium == false
+        && request.resource.data.role in ['student', 'teacher'];
+
+      // Atualização: próprio usuário, mas NÃO pode alterar premium, role, stripeCustomerId, stripeSubId
+      allow update: if request.auth != null
+        && request.auth.uid == uid
+        && !('premium'         in request.resource.data.diff(resource.data).affectedKeys())
+        && !('role'            in request.resource.data.diff(resource.data).affectedKeys())
+        && !('stripeCustomerId' in request.resource.data.diff(resource.data).affectedKeys())
+        && !('stripeSubId'     in request.resource.data.diff(resource.data).affectedKeys());
+
+      allow delete: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // ── Ranking (público leitura, escrita próprio uid) ──
+    match /ranking/{uid} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // ── Matérias (professor cria/edita, alunos leem) ──
+    match /subjects/{subjectId} {
+      allow read: if request.auth != null;
+      allow create, update, delete: if request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
+
+      match /missions/{missionId} {
+        allow read: if request.auth != null;
+        allow create, update, delete: if request.auth != null
+          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
+      }
+    }
+
+    // ── Resultados de missões ──
+    match /missionResults/{key} {
+      allow read: if request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if false;
+    }
+  }
+}
