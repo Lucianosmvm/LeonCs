@@ -404,6 +404,10 @@ pre.code-pre .mt{color:#80cbc4}
     grid-row:1;
     border-left:1px solid var(--bd);
     border-right:1px solid var(--bd);
+    display:none;
+  }
+  .scr.on{
+    display:flex;
   }
 
   body.desk-auth .scr.on{
