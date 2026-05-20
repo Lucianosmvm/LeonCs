@@ -4,6 +4,7 @@
 // ═══════════════════════════════════════════════════════
 
 let _fbAuth = null, _fbDb = null;
+window._loggingOut = false;
 window._currentUser = null;
 window._fb = null;
 
@@ -35,14 +36,18 @@ async function loadFirebase() {
     onAuthStateChanged(_fbAuth, async (user) => {
       hideLoading();
       if (user) {
+        if (window._loggingOut) return;
         window._currentUser = user;
         showLoading('SINCRONIZANDO...');
         await _loadCloud(user.uid);
         hideLoading();
+        if (window._loggingOut) return;
         regenH(); checkStreakLoss(); _saveLocal();
         await checkPaymentReturn();
+        if (window._loggingOut) return;
         if (S.role === 'teacher') { go('tc'); } else { go('sb'); }
       } else {
+        window._loggingOut = false;
         window._currentUser = null;
         S = defState();
         _saveLocal();
