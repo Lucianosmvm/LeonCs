@@ -1,16 +1,18 @@
 // ═══════════════════════════════════════════════════════
-// TEACHER — Painel do Professor: criar/editar missões e ver alunos
-// Depende de: config.js, state.js, firebase.js, ui.js, navigation.js
+// TEACHER — Painel do Professor: matérias, missões e stats de alunos
 // ═══════════════════════════════════════════════════════
 
-let _tcSubject   = 'csharp';
-let _tcMissions  = [];
-let _tcEditing   = null; // missão sendo editada
-let _tcSteps     = [];   // steps do editor atual
+let _tcSubject    = null; // matéria selecionada no painel
+let _tcSubjects   = [];   // matérias do professor no Firestore
+let _tcMissions   = [];
+let _tcEditing    = null;
+let _tcSteps      = [];
+let _tcStepIdx    = -1;
+let _tcStepOpts   = [];
 
-// ── Tela principal do professor ──
+// ── Tela principal ──
 
-function refreshTeacher() {
+async function refreshTeacher() {
   const u = window._currentUser;
   if (!u) return;
   const ini = (u.displayName || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
@@ -19,13 +21,63 @@ function refreshTeacher() {
   const nm = document.getElementById('tc-name');
   if (nm) nm.textContent = u.displayName || 'Professor';
 
-  _renderSubjectTabs('tc-subj-tabs', _tcSubject, s => { _tcSubject = s; loadTcMissions(); });
+  await loadTcSubjects();
+}
+
+async function loadTcSubjects() {
+  const tabs = document.getElementById('tc-subj-tabs');
+  const list = document.getElementById('tc-mission-list');
+  if (!tabs) return;
+
+  tabs.innerHTML = '<span style="font-size:.7rem;color:var(--t3)">// CARREGANDO...</span>';
+
+  // Carrega todas as matérias criadas por este professor
+  try {
+    const uid = window._currentUser?.uid;
+    const q = window._fb.query(
+      window._fb.collection(_fbDb, 'subjects'),
+      window._fb.orderBy('createdAt', 'asc')
+    );
+    const snap = await window._fb.getDocs(q);
+    _tcSubjects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) {
+    _tcSubjects = [];
+  }
+
+  // Renderiza abas
+  tabs.innerHTML = '';
+
+  if (!_tcSubjects.length) {
+    tabs.innerHTML = '<span style="font-size:.72rem;color:var(--t3)">Nenhuma matéria criada. Clique em + NOVA MATÉRIA</span>';
+    if (list) list.innerHTML = '<div class="tc-empty">Crie uma matéria primeiro para adicionar atividades.</div>';
+    return;
+  }
+
+  if (!_tcSubject || !_tcSubjects.find(s => s.id === _tcSubject)) {
+    _tcSubject = _tcSubjects[0].id;
+  }
+
+  _tcSubjects.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'subj-tab' + (s.id === _tcSubject ? ' active' : '');
+    btn.style.setProperty('--subj-color', s.color || '#c8a96e');
+    btn.textContent = (s.icon || '📚') + ' ' + s.name;
+    btn.dataset.sid = s.id;
+    btn.addEventListener('click', () => {
+      tabs.querySelectorAll('.subj-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      _tcSubject = s.id;
+      loadTcMissions();
+    });
+    tabs.appendChild(btn);
+  });
+
   loadTcMissions();
 }
 
 async function loadTcMissions() {
   const list = document.getElementById('tc-mission-list');
-  if (!list) return;
+  if (!list || !_tcSubject) return;
   list.innerHTML = '<div class="tc-loading">// CARREGANDO ATIVIDADES...</div>';
   _tcMissions = await loadTeacherMissions(_tcSubject);
   if (!_tcMissions.length) {
@@ -35,7 +87,7 @@ async function loadTcMissions() {
   list.innerHTML = _tcMissions.map((m, i) => `
     <div class="tc-mcard">
       <div class="tc-mcard-info">
-        <div class="tc-mcard-title">${m.title || 'Sem título'}</div>
+        <div class="tc-mcard-title">${m.icon || '📝'} ${m.title || 'Sem título'}</div>
         <div class="tc-mcard-meta">${(m.steps || []).length} exercícios · Ordem ${m.order ?? i}</div>
       </div>
       <div class="tc-mcard-btns">
@@ -45,6 +97,44 @@ async function loadTcMissions() {
     </div>
   `).join('');
 }
+
+// ── Nova Matéria ──
+
+function tcNewSubject() {
+  document.getElementById('modal-subject').classList.add('on');
+  document.getElementById('ms-name').value  = '';
+  document.getElementById('ms-icon').value  = '📚';
+  document.getElementById('ms-color').value = '#3498db';
+  document.getElementById('ms-desc').value  = '';
+  document.getElementById('ms-id').value    = '';
+}
+
+async function tcSaveSubject() {
+  const name  = document.getElementById('ms-name').value.trim();
+  const icon  = document.getElementById('ms-icon').value.trim() || '📚';
+  const color = document.getElementById('ms-color').value || '#3498db';
+  const desc  = document.getElementById('ms-desc').value.trim();
+  const existingId = document.getElementById('ms-id').value.trim();
+
+  if (!name) { showToast('Nome obrigatório.', 'err'); return; }
+
+  showLoading('SALVANDO MATÉRIA...');
+  try {
+    const data = { name, icon, color, desc };
+    if (existingId) data.id = existingId;
+    await saveSubject(data);
+    showToast('Matéria salva!', 'ok');
+    document.getElementById('modal-subject').classList.remove('on');
+    await loadTcSubjects();
+  } catch(e) { showToast('Erro: ' + e.message, 'err'); }
+  finally { hideLoading(); }
+}
+
+function tcCloseSubjectModal() {
+  document.getElementById('modal-subject').classList.remove('on');
+}
+
+// ── Editor de missão ──
 
 async function tcDeleteMission(i) {
   const m = _tcMissions[i];
@@ -59,9 +149,8 @@ async function tcDeleteMission(i) {
   finally { hideLoading(); }
 }
 
-// ── Editor de missão ──
-
 function tcNewMission() {
+  if (!_tcSubject) { showToast('Crie uma matéria primeiro.', 'err'); return; }
   _tcEditing = { title: '', icon: '📝', desc: '', objs: [''], free: true, order: _tcMissions.length, steps: [] };
   _tcSteps = [];
   renderTcEditor();
@@ -78,13 +167,11 @@ function tcEditMission(i) {
 function renderTcEditor() {
   if (!_tcEditing) return;
   const el = id => document.getElementById(id);
-
   if (el('tce-title'))   el('tce-title').value   = _tcEditing.title || '';
   if (el('tce-icon'))    el('tce-icon').value     = _tcEditing.icon  || '📝';
   if (el('tce-desc'))    el('tce-desc').value     = _tcEditing.desc  || '';
   if (el('tce-order'))   el('tce-order').value    = _tcEditing.order ?? 0;
   if (el('tce-free'))    el('tce-free').checked   = _tcEditing.free  !== false;
-
   renderTcObjs();
   renderTcSteps();
 }
@@ -143,10 +230,7 @@ function tcRemoveStep(i) {
   renderTcSteps();
 }
 
-// ── Modal de step ──
-
-let _tcStepIdx = -1;
-let _tcStepOpts = [];
+// ── Modal de exercício ──
 
 function tcAddStep() {
   _tcStepIdx = -1;
@@ -179,8 +263,8 @@ function _smTypeChange() {
   const t = document.getElementById('sm-type')?.value;
   const fillRow  = document.getElementById('sm-fill-row');
   const optsArea = document.getElementById('sm-opts-area');
-  if (fillRow)  fillRow.style.display  = t === 'fill'  ? 'flex' : 'none';
-  if (optsArea) optsArea.style.display = t !== 'fill'  ? 'block': 'none';
+  if (fillRow)  fillRow.style.display  = t === 'fill' ? 'flex' : 'none';
+  if (optsArea) optsArea.style.display = t !== 'fill' ? 'block' : 'none';
 }
 
 function _renderStepOpts() {
@@ -220,11 +304,7 @@ function tcSaveStep() {
     step.opts = _tcStepOpts.filter(o => o.t.trim());
   }
 
-  if (_tcStepIdx >= 0) {
-    _tcSteps[_tcStepIdx] = step;
-  } else {
-    _tcSteps.push(step);
-  }
+  if (_tcStepIdx >= 0) { _tcSteps[_tcStepIdx] = step; } else { _tcSteps.push(step); }
   document.getElementById('modal-step').classList.remove('on');
   renderTcSteps();
 }
@@ -233,16 +313,16 @@ function tcCloseStepModal() {
   document.getElementById('modal-step').classList.remove('on');
 }
 
-// ── Salvar missão completa ──
+// ── Salvar missão ──
 
 async function tcSaveMission() {
   const el = id => document.getElementById(id);
-  _tcEditing.title = el('tce-title')?.value.trim() || '';
-  _tcEditing.icon  = el('tce-icon')?.value.trim()  || '📝';
-  _tcEditing.desc  = el('tce-desc')?.value.trim()  || '';
-  _tcEditing.order = parseInt(el('tce-order')?.value) || 0;
-  _tcEditing.free  = el('tce-free')?.checked !== false;
-  _tcEditing.steps = _tcSteps;
+  _tcEditing.title   = el('tce-title')?.value.trim() || '';
+  _tcEditing.icon    = el('tce-icon')?.value.trim()  || '📝';
+  _tcEditing.desc    = el('tce-desc')?.value.trim()  || '';
+  _tcEditing.order   = parseInt(el('tce-order')?.value) || 0;
+  _tcEditing.free    = el('tce-free')?.checked !== false;
+  _tcEditing.steps   = _tcSteps;
   _tcEditing.subject = _tcSubject;
 
   if (!_tcEditing.title) { showToast('Título obrigatório.', 'err'); return; }
@@ -250,59 +330,57 @@ async function tcSaveMission() {
 
   showLoading('SALVANDO...');
   try {
-    const fid = await saveTeacherMission(_tcSubject, _tcEditing);
+    await saveTeacherMission(_tcSubject, _tcEditing);
     showToast('Atividade salva!', 'ok');
     go('tc');
   } catch(e) { showToast('Erro ao salvar: ' + e.message, 'err'); }
   finally { hideLoading(); }
 }
 
-// ── Tela de estatísticas dos alunos ──
+// ── Stats de alunos ──
 
 async function refreshTcStats() {
   const list = document.getElementById('tc-students-list');
   if (!list) return;
   list.innerHTML = '<div class="tc-loading">// CARREGANDO ALUNOS...</div>';
-  const students = await loadStudentList();
+
+  const [students, results] = await Promise.all([
+    loadStudentList(),
+    _tcSubject ? loadMissionResults(_tcSubject) : Promise.resolve([]),
+  ]);
+
+  document.getElementById('tc-students-count').textContent = students.length + ' alunos';
+
   if (!students.length) {
     list.innerHTML = '<div class="tc-empty">Nenhum aluno cadastrado ainda.</div>';
     return;
   }
+
   list.innerHTML = students.map((s, i) => {
     const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}.`;
+    const subjectDone = (s.subjectDone || {})[_tcSubject || '']?.length || 0;
+    const myResults = results.filter(r => r.uid === s.uid);
+    const avgAcc = myResults.length
+      ? Math.round(myResults.reduce((a, r) => a + (r.accuracy || 0), 0) / myResults.length)
+      : null;
+
     return `<div class="rk-row">
       <div class="rk-pos">${medal}</div>
       <div class="rk-info">
         <div class="rk-name">${s.name || 'Aluno'}</div>
-        <div class="rk-meta">${s.done?.length || 0} missões · ${s.streak || 0} dias 🎯 · ${s.correct || 0} corretas</div>
+        <div class="rk-meta">
+          ${s.xp || 0} XP · Nv ${Math.floor((s.xp||0)/200)+1}
+          ${_tcSubject ? ` · ${subjectDone} ativ. nesta matéria` : ''}
+          ${avgAcc !== null ? ` · ${avgAcc}% acerto` : ''}
+        </div>
       </div>
-      <div class="rk-xp">${s.xp || 0} XP</div>
+      <div class="rk-xp">${s.done?.length || 0} missões</div>
     </div>`;
   }).join('');
-  document.getElementById('tc-students-count').textContent = students.length + ' alunos';
 }
 
 // ── Utilitários ──
 
 function _esc(str) {
   return (str || '').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
-function _renderSubjectTabs(containerId, activeId, onSelect) {
-  const el = document.getElementById(containerId);
-  if (!el) return;
-  el.innerHTML = SUBJECTS.map(s => `
-    <button class="subj-tab${s.id === activeId ? ' active' : ''}"
-            style="--subj-color:${s.color}"
-            data-sid="${s.id}">
-      ${s.icon} ${s.label}
-    </button>
-  `).join('');
-  el.querySelectorAll('.subj-tab').forEach(btn => {
-    btn.addEventListener('click', () => {
-      el.querySelectorAll('.subj-tab').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      onSelect(btn.dataset.sid);
-    });
-  });
 }

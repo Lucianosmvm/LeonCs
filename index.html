@@ -420,6 +420,34 @@
   <div id="tc-students-list" class="rk-list scrollable"></div>
 </div>
 
+<!-- ══════════════ MODAL NOVA MATÉRIA (PROFESSOR) ══════════════ -->
+<div class="modal" id="modal-subject">
+  <div class="mbox">
+    <h2>📚 NOVA MATÉRIA</h2>
+    <input type="hidden" id="ms-id">
+    <div class="form-group">
+      <div class="form-label">NOME *</div>
+      <input class="tce-inp" id="ms-name" placeholder="Ex: Python, HTML, Java...">
+    </div>
+    <div class="form-group">
+      <div class="form-label">ÍCONE (emoji)</div>
+      <input class="tce-inp" id="ms-icon" placeholder="📚" style="font-size:1.4rem;text-align:center;width:80px">
+    </div>
+    <div class="form-group">
+      <div class="form-label">COR</div>
+      <input type="color" id="ms-color" value="#3498db" style="height:40px;width:60px;border:none;background:none;cursor:pointer">
+    </div>
+    <div class="form-group">
+      <div class="form-label">DESCRIÇÃO</div>
+      <textarea class="tce-inp tce-ta" id="ms-desc" placeholder="Breve descrição da matéria..."></textarea>
+    </div>
+    <div class="mbox-btns">
+      <button class="btn btn-gold" onclick="tcSaveSubject()">✅ SALVAR MATÉRIA</button>
+      <button class="btn btn-ghost" onclick="tcCloseSubjectModal()">CANCELAR</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════ MODAL DE EXERCÍCIO (PROFESSOR) ══════════════ -->
 <div class="modal" id="modal-step">
   <div class="mbox mbox-lg">

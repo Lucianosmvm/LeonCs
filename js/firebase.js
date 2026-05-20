@@ -170,6 +170,57 @@ async function deleteTeacherMission(subjectId, firestoreId) {
   await window._fb.deleteDoc(window._fb.doc(_fbDb, 'subjects', subjectId, 'missions', firestoreId));
 }
 
+async function loadDynamicSubjects() {
+  if (!_fbDb || !window._fb) return [];
+  try {
+    const q = window._fb.query(
+      window._fb.collection(_fbDb, 'subjects'),
+      window._fb.orderBy('createdAt', 'asc')
+    );
+    const snap = await window._fb.getDocs(q);
+    const subjects = [];
+    for (const d of snap.docs) {
+      // só inclui se tiver pelo menos 1 missão
+      const missSnap = await window._fb.getDocs(
+        window._fb.collection(_fbDb, 'subjects', d.id, 'missions')
+      );
+      if (!missSnap.empty) subjects.push({ id: d.id, ...d.data() });
+    }
+    return subjects;
+  } catch(e) { console.warn('Matérias indisponível:', e.message); return []; }
+}
+
+async function saveSubject(subjectData) {
+  if (!_fbDb || !window._fb) return null;
+  const uid = window._currentUser?.uid;
+  if (!uid) return null;
+  if (subjectData.id) {
+    const ref = window._fb.doc(_fbDb, 'subjects', subjectData.id);
+    const { id, ...data } = subjectData;
+    await window._fb.updateDoc(ref, { ...data, updatedAt: window._fb.serverTimestamp() });
+    return subjectData.id;
+  } else {
+    const ref = await window._fb.addDoc(window._fb.collection(_fbDb, 'subjects'), {
+      ...subjectData,
+      createdBy: uid,
+      createdAt: window._fb.serverTimestamp(),
+    });
+    return ref.id;
+  }
+}
+
+async function loadMissionResults(subjectId) {
+  if (!_fbDb || !window._fb) return [];
+  try {
+    const q = window._fb.query(
+      window._fb.collection(_fbDb, 'missionResults'),
+      window._fb.where('subjectId', '==', subjectId)
+    );
+    const snap = await window._fb.getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) { console.warn('Resultados indisponível:', e.message); return []; }
+}
+
 async function loadStudentList() {
   if (!_fbDb || !window._fb) return [];
   try {

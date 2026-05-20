@@ -5,10 +5,12 @@
 
 let _currentSubjectId = 'csharp';
 let _teacherMissionsCache = {};
+let _dynamicSubjects = []; // matérias criadas pelo professor no Firestore
 
-function refreshSubjectSelect() {
+async function refreshSubjectSelect() {
   const grid = document.getElementById('sb-grid');
   if (!grid) return;
+
   const u = window._currentUser;
   if (u) {
     const ini = (u.displayName || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
@@ -18,26 +20,52 @@ function refreshSubjectSelect() {
     if (nm) nm.textContent = u.displayName || 'Agente';
   }
 
+  grid.innerHTML = '<div class="tc-loading">// CARREGANDO MATÉRIAS...</div>';
+
+  // Carrega matérias do Firestore com pelo menos 1 missão
+  _dynamicSubjects = await loadDynamicSubjects();
+
   const done = S.subjectDone || {};
-  grid.innerHTML = SUBJECTS.map(s => {
+
+  // C# sempre visível (hardcoded)
+  const csharpDone = (Array.isArray(S.done) ? S.done.length : 0);
+  let html = `
+    <div class="sb-card" style="--subj-color:#9b59b6" onclick="openSubject('csharp')">
+      <div class="sb-card-ico">🎮</div>
+      <div class="sb-card-label">C#</div>
+      <div class="sb-card-desc">Aprenda C# do zero com missões temáticas</div>
+      <div class="sb-card-count">${csharpDone} missões completas</div>
+    </div>`;
+
+  // Matérias dinâmicas do Firestore
+  _dynamicSubjects.forEach(s => {
     const count = done[s.id]?.length || 0;
-    return `
-    <div class="sb-card" style="--subj-color:${s.color}" onclick="openSubject('${s.id}')">
-      <div class="sb-card-ico">${s.icon}</div>
-      <div class="sb-card-label">${s.label}</div>
-      <div class="sb-card-desc">${s.desc}</div>
+    html += `
+    <div class="sb-card" style="--subj-color:${s.color || '#c8a96e'}" onclick="openSubject('${s.id}')">
+      <div class="sb-card-ico">${s.icon || '📚'}</div>
+      <div class="sb-card-label">${s.name}</div>
+      <div class="sb-card-desc">${s.desc || ''}</div>
       <div class="sb-card-count">${count} missões completas</div>
     </div>`;
-  }).join('');
+  });
+
+  grid.innerHTML = html || '<div class="tc-empty">Nenhuma matéria disponível ainda.</div>';
 }
 
 async function openSubject(subjectId) {
   _currentSubjectId = subjectId;
   S.currentSubject  = subjectId;
   SEL.subjectId     = subjectId;
-  const subj = SUBJECTS.find(s => s.id === subjectId);
-  document.getElementById('mp-subj-label').textContent = subj ? subj.label : '';
-  document.getElementById('mp-subj-icon').textContent  = subj ? subj.icon  : '';
+
+  let label = 'C#', icon = '🎮';
+  if (subjectId !== 'csharp') {
+    const subj = _dynamicSubjects.find(s => s.id === subjectId);
+    label = subj?.name || subjectId;
+    icon  = subj?.icon || '📚';
+  }
+  document.getElementById('mp-subj-label').textContent = label;
+  document.getElementById('mp-subj-icon').textContent  = icon;
+
   await refreshSubjectMap();
   go('mp');
 }
@@ -137,4 +165,17 @@ function markSubjectMissionDone(missionId) {
   }
   saveS();
   delete _teacherMissionsCache[_currentSubjectId];
+}
+
+function saveMissionResult(subjectId, missionId, correct, wrong) {
+  if (!_fbDb || !window._fb || !window._currentUser) return;
+  const uid = window._currentUser.uid;
+  const acc = (correct + wrong) > 0 ? Math.round((correct / (correct + wrong)) * 100) : 100;
+  const key = `${uid}_${subjectId}_${missionId}`;
+  window._fb.setDoc(window._fb.doc(_fbDb, 'missionResults', key), {
+    uid, subjectId, missionId: String(missionId),
+    correct, wrong, accuracy: acc,
+    completedAt: window._fb.serverTimestamp(),
+    studentName: window._currentUser.displayName || 'Aluno',
+  }).catch(() => {});
 }
