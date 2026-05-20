@@ -549,7 +549,7 @@ pre.code-pre .mt{color:#80cbc4}
 /* ══════════════════════════════
    SELEÇÃO DE MATÉRIA
 ══════════════════════════════ */
-#sb{background:var(--bg);display:flex;flex-direction:column}
+#sb{background:var(--bg)}
 .sb-header{padding:20px 20px 10px;text-align:center}
 .sb-title{font-family:'Bebas Neue',cursive;font-size:2rem;letter-spacing:2px;margin:8px 0 4px}
 .sb-sub{font-size:.76rem;color:var(--t2);letter-spacing:1px;margin-bottom:0}
@@ -579,7 +579,7 @@ pre.code-pre .mt{color:#80cbc4}
 /* ══════════════════════════════
    PAINEL DO PROFESSOR
 ══════════════════════════════ */
-#tc{background:var(--bg);display:flex;flex-direction:column}
+#tc{background:var(--bg)}
 #tc-edit{background:var(--bg)}
 #tc-stats{background:var(--bg)}
 .tc-topbar{background:var(--s1);border-bottom:1px solid var(--bd);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
