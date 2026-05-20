@@ -25,7 +25,7 @@ function _fbErrMsg(code) {
 }
 
 function _clearAuthErrs() {
-  ['reg-name-err', 'reg-email-err', 'reg-pass-err', 'log-email-err', 'log-pass-err']
+  ['reg-name-err', 'reg-email-err', 'reg-pass-err', 'log-email-err', 'log-pass-err', 'reg-classroom-err']
     .forEach(id => { const el = document.getElementById(id); if (el) el.textContent = ''; });
   document.querySelectorAll('input').forEach(i => i.classList.remove('err'));
 }
@@ -62,9 +62,24 @@ async function doRegister() {
       }
       role = 'teacher';
     }
+
+    // Valida código de turma antes de criar conta
+    let classroomId = null;
+    const classroomCodeEl = document.getElementById('reg-classroom-code');
+    const classroomCode = classroomCodeEl ? classroomCodeEl.value.trim() : '';
+    if (classroomCode) {
+      const classroom = await findClassroomByCode(classroomCode);
+      if (!classroom) {
+        document.getElementById('reg-classroom-err').textContent = 'Código de turma não encontrado.';
+        hideLoading();
+        return;
+      }
+      classroomId = classroom.id;
+    }
+
     const cred = await window._fb.createUserWithEmailAndPassword(_fbAuth, email, pass);
     await window._fb.updateProfile(cred.user, { displayName: name });
-    await _ensureUserDoc(cred.user, role);
+    await _ensureUserDoc(cred.user, role, classroomId);
     S.role = role;
     showToast('Conta criada! Bem-vindo' + (role === 'teacher' ? ', Professor ' : ', ') + name + '!', 'ok');
     // onAuthStateChanged dispara automaticamente

@@ -70,7 +70,7 @@ async function loadFirebase() {
   }
 }
 
-async function _ensureUserDoc(user, role) {
+async function _ensureUserDoc(user, role, classroomId) {
   if (!_fbDb || !window._fb) return;
   const ref  = window._fb.doc(_fbDb, 'users', user.uid);
   const snap = await window._fb.getDoc(ref);
@@ -80,6 +80,7 @@ async function _ensureUserDoc(user, role) {
       xp: 0, hearts: MAX_H, streak: 0, lastPlayed: null,
       done: [], correct: 0, premium: false, achievements: {},
       role: role || 'student', subjectDone: {},
+      classroomId: classroomId || null,
       createdAt: window._fb.serverTimestamp(),
       lastLogin:  window._fb.serverTimestamp(),
     });
@@ -226,16 +227,54 @@ async function loadMissionResults(subjectId) {
   } catch(e) { console.warn('Resultados indisponível:', e.message); return []; }
 }
 
-async function loadStudentList() {
-  if (!_fbDb || !window._fb) return [];
+async function loadStudentList(classroomId) {
+  if (!_fbDb || !window._fb || !classroomId) return [];
   try {
     const q = window._fb.query(
       window._fb.collection(_fbDb, 'users'),
-      window._fb.where('role', '==', 'student'),
+      window._fb.where('classroomId', '==', classroomId),
       window._fb.orderBy('xp', 'desc'),
       window._fb.limit(100)
     );
     const snap = await window._fb.getDocs(q);
     return snap.docs.map(d => ({ uid: d.id, ...d.data() }));
   } catch(e) { console.warn('Lista de alunos indisponível:', e.message); return []; }
+}
+
+async function createClassroom(teacherUid, name) {
+  if (!_fbDb || !window._fb) return null;
+  const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+  const ref = await window._fb.addDoc(window._fb.collection(_fbDb, 'classrooms'), {
+    teacherUid, name, code,
+    createdAt: window._fb.serverTimestamp(),
+  });
+  return { id: ref.id, code, name, teacherUid };
+}
+
+async function loadMyClassroom(teacherUid) {
+  if (!_fbDb || !window._fb) return null;
+  try {
+    const q = window._fb.query(
+      window._fb.collection(_fbDb, 'classrooms'),
+      window._fb.where('teacherUid', '==', teacherUid)
+    );
+    const snap = await window._fb.getDocs(q);
+    if (snap.empty) return null;
+    const d = snap.docs[0];
+    return { id: d.id, ...d.data() };
+  } catch(e) { console.warn('Classroom load error:', e.message); return null; }
+}
+
+async function findClassroomByCode(code) {
+  if (!_fbDb || !window._fb) return null;
+  try {
+    const q = window._fb.query(
+      window._fb.collection(_fbDb, 'classrooms'),
+      window._fb.where('code', '==', code.toUpperCase().trim())
+    );
+    const snap = await window._fb.getDocs(q);
+    if (snap.empty) return null;
+    const d = snap.docs[0];
+    return { id: d.id, ...d.data() };
+  } catch(e) { console.warn('Classroom find error:', e.message); return null; }
 }

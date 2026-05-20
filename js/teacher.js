@@ -9,6 +9,7 @@ let _tcEditing    = null;
 let _tcSteps      = [];
 let _tcStepIdx    = -1;
 let _tcStepOpts   = [];
+let _tcClassroom  = null; // turma do professor
 
 // ── Tela principal ──
 
@@ -340,19 +341,41 @@ async function tcSaveMission() {
 // ── Stats de alunos ──
 
 async function refreshTcStats() {
-  const list = document.getElementById('tc-students-list');
+  const list         = document.getElementById('tc-students-list');
+  const classroomBox = document.getElementById('tc-classroom-box');
+  const noClassroom  = document.getElementById('tc-no-classroom');
   if (!list) return;
+
   list.innerHTML = '<div class="tc-loading">// CARREGANDO ALUNOS...</div>';
 
+  const uid = window._currentUser?.uid;
+  if (!uid) return;
+
+  if (!_tcClassroom) {
+    _tcClassroom = await loadMyClassroom(uid);
+  }
+
+  if (!_tcClassroom) {
+    if (classroomBox) classroomBox.style.display = 'none';
+    if (noClassroom)  noClassroom.style.display  = 'block';
+    list.innerHTML = '';
+    document.getElementById('tc-students-count').textContent = '0 alunos';
+    return;
+  }
+
+  if (classroomBox) classroomBox.style.display = 'block';
+  if (noClassroom)  noClassroom.style.display  = 'none';
+  document.getElementById('tc-classroom-code').textContent = _tcClassroom.code;
+
   const [students, results] = await Promise.all([
-    loadStudentList(),
+    loadStudentList(_tcClassroom.id),
     _tcSubject ? loadMissionResults(_tcSubject) : Promise.resolve([]),
   ]);
 
   document.getElementById('tc-students-count').textContent = students.length + ' alunos';
 
   if (!students.length) {
-    list.innerHTML = '<div class="tc-empty">Nenhum aluno cadastrado ainda.</div>';
+    list.innerHTML = `<div class="tc-empty">Nenhum aluno na turma ainda.<br><span style="font-size:.75rem;color:var(--t3)">Compartilhe o código: <b>${_tcClassroom.code}</b></span></div>`;
     return;
   }
 
@@ -377,6 +400,29 @@ async function refreshTcStats() {
       <div class="rk-xp">${s.done?.length || 0} missões</div>
     </div>`;
   }).join('');
+}
+
+async function tcCreateClassroom() {
+  const uid  = window._currentUser?.uid;
+  const name = window._currentUser?.displayName || 'Professor';
+  if (!uid) return;
+  showLoading('CRIANDO TURMA...');
+  try {
+    _tcClassroom = await createClassroom(uid, name + ' — Turma');
+    hideLoading();
+    await refreshTcStats();
+    showToast('Turma criada! Código: ' + _tcClassroom.code, 'ok');
+  } catch(e) {
+    hideLoading();
+    showToast('Erro ao criar turma: ' + e.message, 'err');
+  }
+}
+
+function copyClassroomCode() {
+  if (!_tcClassroom) return;
+  navigator.clipboard.writeText(_tcClassroom.code)
+    .then(() => showToast('Código copiado: ' + _tcClassroom.code, 'ok'))
+    .catch(() => showToast('Código: ' + _tcClassroom.code, 'info'));
 }
 
 // ── Utilitários ──
