@@ -34,6 +34,7 @@ function refreshSubjectSelect() {
 async function openSubject(subjectId) {
   _currentSubjectId = subjectId;
   S.currentSubject  = subjectId;
+  SEL.subjectId     = subjectId;
   const subj = SUBJECTS.find(s => s.id === subjectId);
   document.getElementById('mp-subj-label').textContent = subj ? subj.label : '';
   document.getElementById('mp-subj-icon').textContent  = subj ? subj.icon  : '';

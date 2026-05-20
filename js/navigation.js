@@ -12,7 +12,7 @@ function go(id) {
   el.classList.add('on');
   if (id === 'hm') refreshHome();
   if (id === 'sb') refreshSubjectSelect();
-  if (id === 'mp') { /* refreshSubjectMap já chamado em openSubject ou refreshMap para C# */ if (!SEL.subjectId || SEL.subjectId === 'csharp') refreshMap(); }
+  if (id === 'mp') { if (!SEL.subjectId || SEL.subjectId === 'csharp') refreshMap(); else refreshSubjectMap(); }
   if (id === 'pr') refreshProfile();
   if (id === 'rk') refreshRank();
   if (id === 'ac') renderAchievements();
