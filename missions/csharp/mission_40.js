@@ -60,9 +60,9 @@ const MISSION_40 = {
       hint: 'Verificação antes de invocar',
       opts: [
         { t: 'Morreu?.Invoke(this, EventArgs.Empty)', ok: true },
-        { },
         { t: 'Morreu(this, EventArgs.Empty)', ok: false },
-        { t: 'if (Morreu) Morreu()', ok: false } catch { t: 'try { Morreu(); }', ok: false },
+        { t: 'if (Morreu != null) Morreu(this, EventArgs.Empty)', ok: false },
+        { t: 'try { Morreu(); }', ok: false },
       ],
       exp: '"Morreu?.Invoke(this, EventArgs.Empty)" — o operador ?. verifica se há assinantes antes de invocar. Thread-safe e conciso.',
     },

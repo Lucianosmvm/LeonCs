@@ -70,9 +70,9 @@ const MISSION_75 = {
       q: 'Como verificar que um método lança ArgumentNullException no xUnit?',
       hint: 'Assert.Throws com tipo da exceção',
       opts: [
-        { t: 'try { metodo(null); },
-        { Assert.Pass(); },
-        { t: 'Assert.IsTrue(method() == null)', ok: false } catch { t: 'Assert.Throws<ArgumentNullException>(() => metodo(null))', ok: true }', ok: false },
+        { t: 'try { metodo(null); } catch { Assert.Pass(); }', ok: false },
+        { t: 'Assert.IsTrue(method() == null)', ok: false },
+        { t: 'Assert.Throws<ArgumentNullException>(() => metodo(null))', ok: true },
         { t: '[ExpectedException(typeof(ArgumentNullException))]', ok: false },
       ],
       exp: 'Assert.Throws<T>(action): verifica que action lança T. Retorna a exceção para inspeção adicional. [ExpectedException] é MSTest/NUnit (não recomendado — não localiza onde a exceção ocorre).',

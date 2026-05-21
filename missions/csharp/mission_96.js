@@ -187,8 +187,8 @@ Console.<span class="mt">WriteLine</span>(<span class="st">$"id={m.Id} nome={m.N
       hint: 'Formato de interpolação',
       opts: [
         { t: 'id=1 nome=Infiltrar', ok: true },
-        { t: 'Missao { Id = 1, Nome = Infiltrar },
-        { t: 'Erro — record com interpolação', ok: false }', ok: false },
+        { t: 'Missao { Id = 1, Nome = Infiltrar }', ok: false },
+        { t: 'Erro — record com interpolação', ok: false },
         { t: '1 Infiltrar', ok: false },
       ],
       exp: 'm.Id=1, m.Nome="Infiltrar". "id=1 nome=Infiltrar".',

@@ -40,10 +40,10 @@ const MISSION_90 = {
       q: 'Qual implementação segue o DIP?',
       hint: 'Depender de interface, não de implementação concreta',
       opts: [
-        { t: 'class OrderService(IDatabase db) — depende da abstração IDatabase', ok: true }', ok: false },
+        { t: 'class OrderService(IDatabase db) — depende da abstração IDatabase', ok: true },
         { t: 'static class OrderService — sem dependências', ok: false },
         { t: 'class OrderService : SqlDatabase — herança de implementação', ok: false },
-        { t: 'class OrderService { var db = new SqlDatabase(); },
+        { t: 'class OrderService { var db = new SqlDatabase(); }', ok: false },
       ],
       exp: 'DIP: depender de IDatabase (abstração), não de SqlDatabase (concreto). Permite trocar implementação sem modificar OrderService. DI + interfaces = DIP na prática.',
     },

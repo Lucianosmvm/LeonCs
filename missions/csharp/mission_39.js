@@ -60,9 +60,9 @@ const MISSION_39 = {
       hint: 'Records são imutáveis por padrão',
       opts: [
         { t: 'r == outroRecord', ok: false },
-        { t: 'r.Nome = "Novo Nome"', ok: true }', ok: false },
+        { t: 'r.Nome = "Novo Nome"', ok: true },
         { t: 'Console.WriteLine(r)', ok: false },
-        { t: 'var r2 = r with { Nome = "Novo" },
+        { t: 'var r2 = r with { Nome = "Novo" }', ok: false },
       ],
       exp: '"r.Nome = X" tenta modificar init-only property — erro de compilação. Use "with" para criar nova instância com modificação.',
     },

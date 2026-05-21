@@ -31,8 +31,8 @@ const MISSION_44 = {
       opts: [
         { t: 'string.Concat()', ok: false },
         { t: 'string.Format()', ok: false },
-        { t: 'Interpolação com $"{},
-        { t: 'StringBuilder — mutável, evita alocações intermediárias', ok: true }"', ok: false },
+        { t: 'Interpolação com $"..."', ok: false },
+        { t: 'StringBuilder — mutável, evita alocações intermediárias', ok: true },
       ],
       exp: '"StringBuilder" é mutável — Append() não cria nova string. Para N concatenações em loop, é O(N) em vez de O(N²).',
     },
