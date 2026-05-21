@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(firebase deploy *)"
+      "Bash(firebase deploy *)",
+      "Bash(node --check missions/python/mission_0.js)",
+      "Bash(node --check missions/python/mission_1.js)",
+      "Bash(node --check missions/python/mission_2.js)",
+      "Bash(node --check missions/python/mission_3.js)",
+      "Bash(node --check missions/python/mission_4.js)"
     ]
   }
 }

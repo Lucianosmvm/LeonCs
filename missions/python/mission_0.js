@@ -51,10 +51,10 @@ const MISSION_PYTHON_0 = {
       bubble: 'Em Python, <strong>não existem chaves { }</strong> para delimitar blocos de código. A <strong>indentação</strong> (espaços/tabs) define a estrutura.',
       q: 'O que define blocos de código em Python?',
       opts: [
-        { t: 'Parênteses ( )', ok: false }', ok: false },
+        { t: 'Parênteses ( )', ok: false },
         { t: 'Ponto e vírgula ;', ok: false },
         { t: 'Indentação (espaços)', ok: true },
-        { t: 'Chaves { },
+        { t: 'Chaves { }', ok: false },
       ],
       exp: 'Python usa indentação obrigatória para definir blocos. Erros de indentação causam IndentationError — diferente de C#, Java e outras.',
     },

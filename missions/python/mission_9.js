@@ -23,9 +23,9 @@ const MISSION_PYTHON_9 = {
       bubble: 'Funções são definidas com <code>def nome():</code> e chamadas pelo nome. O bloco é indentado.',
       q: 'Como definir uma função chamada "atirar" em Python?',
       opts: [
-        { t: 'define atirar():', ok: false }', ok: false },
+        { t: 'define atirar():', ok: false },
         { t: 'def atirar():', ok: true },
-        { t: 'function atirar() {},
+        { t: 'function atirar() {}', ok: false },
         { t: 'func atirar():', ok: false },
       ],
       exp: 'Python usa a palavra-chave def. O corpo da função é indentado. Não há chaves — a indentação delimita o bloco.',

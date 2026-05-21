@@ -39,8 +39,8 @@ const MISSION_PYTHON_12 = {
       opts: [
         { t: 'Quadrado: n**2', ok: false },
         { t: 'Quadrado: 49', ok: true },
-        { t: 'Erro', ok: false }', ok: false },
-        { t: 'Quadrado: {n**2},
+        { t: 'Erro', ok: false },
+        { t: 'Quadrado: {n**2}', ok: false },
       ],
       exp: '{n**2} avalia a expressão: 7**2 = 49. F-strings avaliam qualquer expressão Python válida.',
     },

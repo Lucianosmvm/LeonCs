@@ -147,7 +147,7 @@ const MISSION_PYTHON_3 = {
         { t: 'input() retorna string; sem int() a subtração causaria TypeError', ok: true },
         { t: 'int() não é necessário aqui', ok: false },
       ],
-      exp: 'input() retorna string. Sem int(), "2024 - '2000'" causaria TypeError pois não dá para subtrair string de int.',
+      exp: 'input() retorna string. Sem int(), "2024 - 2000" causaria TypeError pois não dá para subtrair string de int.',
     },
 
   ]
