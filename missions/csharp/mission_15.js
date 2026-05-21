@@ -13,11 +13,11 @@ const MISSION_15 = {
       bubble:'<strong>Sobrecarga (overloading)</strong> permite criar múltiplas funções com o mesmo nome mas parâmetros diferentes.',
       q:'O que define qual versão sobrecarregada de uma função é chamada?',
       hint:'Os argumentos passados na chamada',
-      opts:[
-        {t:'O tipo de retorno', ok:false},
+      opts: [
         {t:'O número e tipo dos argumentos passados', ok:true},
-        {t:'A ordem de declaração', ok:false},
         {t:'O nome é suficiente — qualquer versão funciona', ok:false},
+        {t:'A ordem de declaração', ok:false},
+        {t:'O tipo de retorno', ok:false},
       ],
       exp:'Overloading: o compilador escolhe a versão correta pelo número e tipo dos argumentos. Atacar(int) ≠ Atacar(int, bool).',
     },
@@ -28,11 +28,11 @@ const MISSION_15 = {
       bubble:'Parâmetros <strong>ref</strong> e <strong>out</strong> permitem que a função modifique variáveis do chamador.',
       q:'Qual a diferença entre ref e out?',
       hint:'Um exige inicialização prévia, o outro não',
-      opts:[
-        {t:'São idênticos', ok:false},
+      opts: [
         {t:'ref exige que a variável esteja inicializada; out não exige mas deve ser atribuído na função', ok:true},
-        {t:'out é mais rápido', ok:false},
         {t:'ref funciona apenas com strings', ok:false},
+        {t:'out é mais rápido', ok:false},
+        {t:'São idênticos', ok:false},
       ],
       exp:'"ref": variável já deve ter valor. "out": não precisa de valor inicial, mas a função DEVE atribuir um antes de retornar.',
     },
@@ -43,11 +43,11 @@ const MISSION_15 = {
       bubble:'<strong>Params</strong> permite passar um número variável de argumentos para uma função.',
       q:'static void Imprimir(params string[] msgs) pode ser chamada com:',
       hint:'Params é flexível',
-      opts:[
-        {t:'Apenas um argumento', ok:false},
-        {t:'Qualquer número de argumentos string', ok:true},
+      opts: [
         {t:'Nenhum argumento', ok:false},
+        {t:'Qualquer número de argumentos string', ok:true},
         {t:'Apenas arrays previamente criados', ok:false},
+        {t:'Apenas um argumento', ok:false},
       ],
       exp:'"params" aceita 0 ou mais argumentos. Imprimir("a"), Imprimir("a","b"), Imprimir("a","b","c") — todos funcionam.',
     },
@@ -103,11 +103,11 @@ const MISSION_15 = {
       code:`<span class="kw">static int</span> <span class="mt">Dano</span>(<span class="kw">int</span> b) => b;\n<span class="kw">static int</span> <span class="mt">Dano</span>(<span class="kw">int</span> b, <span class="kw">bool</span> c) => c ? b*<span class="nm">2</span> : b;\n\nConsole.<span class="mt">WriteLine</span>(<span class="mt">Dano</span>(<span class="nm">20</span>));\nConsole.<span class="mt">WriteLine</span>(<span class="mt">Dano</span>(<span class="nm">20</span>, <span class="kw">true</span>));`,
       q:'O que será exibido?',
       hint:'Primeira chama a versão com 1 param, segunda com 2',
-      opts:[
-        {t:'20 e 20', ok:false},
+      opts: [
         {t:'20 e 40', ok:true},
         {t:'Erro — nome duplicado', ok:false},
         {t:'40 e 40', ok:false},
+        {t:'20 e 20', ok:false},
       ],
       exp:'"Dano(20)" chama a versão de 1 parâmetro → 20. "Dano(20, true)" chama a de 2 parâmetros → 20*2 = 40.',
     },
@@ -119,9 +119,9 @@ const MISSION_15 = {
       code:`<span class="kw">static int</span> <span class="mt">Somar</span>(<span class="kw">params int</span>[] nums)\n{\n    <span class="kw">int</span> t = <span class="nm">0</span>;\n    <span class="kw">foreach</span>(<span class="kw">int</span> n <span class="kw">in</span> nums) t += n;\n    <span class="kw">return</span> t;\n}\nConsole.<span class="mt">WriteLine</span>(<span class="mt">Somar</span>(<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>,<span class="nm">4</span>,<span class="nm">5</span>));`,
       q:'O que será exibido?',
       hint:'Soma de 1 a 5',
-      opts:[
-        {t:'5', ok:false},{t:'10', ok:false},
-        {t:'15', ok:true},{t:'54321', ok:false},
+      opts: [
+        {t:'10', ok:false},{t:'15', ok:true},
+        {t:'54321', ok:false},{t:'5', ok:false},
       ],
       exp:'"params int[] nums" recebe 1,2,3,4,5 como array. Soma = 1+2+3+4+5 = 15.',
     },
@@ -133,11 +133,11 @@ const MISSION_15 = {
       code:`<span class="kw">static</span> (<span class="kw">int</span> min, <span class="kw">int</span> max) <span class="mt">MinMax</span>(<span class="kw">int</span>[] a)\n    => (a.<span class="mt">Min</span>(), a.<span class="mt">Max</span>());\n\n<span class="kw">var</span> (min, max) = <span class="mt">MinMax</span>(<span class="kw">new int</span>[] {<span class="nm">3</span>,<span class="nm">7</span>,<span class="nm">1</span>,<span class="nm">9</span>,<span class="nm">4</span>});\nConsole.<span class="mt">WriteLine</span>(<span class="st">$"Min:{min} Max:{max}"</span>);`,
       q:'O que será exibido?',
       hint:'Menor e maior do array {3,7,1,9,4}',
-      opts:[
-        {t:'Min:3 Max:9', ok:false},
-        {t:'Min:1 Max:9', ok:true},
+      opts: [
         {t:'Min:1 Max:7', ok:false},
+        {t:'Min:1 Max:9', ok:true},
         {t:'Min:3 Max:7', ok:false},
+        {t:'Min:3 Max:9', ok:false},
       ],
       exp:'.Min() = 1, .Max() = 9. A tupla retorna (1, 9) e desestrutura em min e max.',
     },
@@ -149,11 +149,11 @@ const MISSION_15 = {
       code:`<span class="kw">static void</span> <span class="mt">Recarregar</span>(<span class="kw">int</span> municao)\n{\n    <span class="kw">if</span> (municao >= <span class="nm">30</span>)\n    {\n        Console.<span class="mt">WriteLine</span>(<span class="st">"Cheio — não precisa recarregar"</span>);\n        <span class="kw">return</span>;\n    }\n    Console.<span class="mt">WriteLine</span>(<span class="st">"Recarregando..."</span>);\n}\n<span class="mt">Recarregar</span>(<span class="nm">30</span>);`,
       q:'O que será exibido para municao = 30?',
       hint:'30 >= 30 é verdadeiro',
-      opts:[
-        {t:'Recarregando...', ok:false},
-        {t:'Cheio — não precisa recarregar', ok:true},
-        {t:'Ambas as mensagens', ok:false},
+      opts: [
         {t:'Nada', ok:false},
+        {t:'Ambas as mensagens', ok:false},
+        {t:'Cheio — não precisa recarregar', ok:true},
+        {t:'Recarregando...', ok:false},
       ],
       exp:'municao=30 >= 30 = true. Imprime a mensagem e "return" encerra a função. A segunda linha não executa.',
     },

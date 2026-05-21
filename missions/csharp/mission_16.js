@@ -13,11 +13,11 @@ const MISSION_16 = {
       bubble:'Strings em C# são <strong>imutáveis</strong>. Qualquer operação que parece modificar uma string cria uma nova na memória.',
       q:'Por que strings são imutáveis em C#?',
       hint:'Segurança e performance (caching)',
-      opts:[
-        {t:'Para dificultar a programação', ok:false},
-        {t:'Por segurança e otimização — strings idênticas podem compartilhar memória', ok:true},
+      opts: [
         {t:'É uma limitação do compilador', ok:false},
+        {t:'Para dificultar a programação', ok:false},
         {t:'Strings podem ser modificadas com ref', ok:false},
+        {t:'Por segurança e otimização — strings idênticas podem compartilhar memória', ok:true},
       ],
       exp:'Imutabilidade garante thread-safety e permite string interning (mesmos literais compartilham memória). Para mutabilidade, use StringBuilder.',
     },
@@ -28,9 +28,9 @@ const MISSION_16 = {
       bubble:'<code>string.Length</code> retorna o número de caracteres. Espaços e símbolos também contam.',
       q:'Qual o Length de "Leon"?',
       hint:'Conte as letras',
-      opts:[
-        {t:'3', ok:false},{t:'5', ok:false},
-        {t:'4', ok:true},{t:'0', ok:false},
+      opts: [
+        {t:'3', ok:false},{t:'4', ok:true},
+        {t:'0', ok:false},{t:'5', ok:false},
       ],
       exp:'"Leon" tem 4 caracteres: L-e-o-n. Length conta todos os caracteres, incluindo espaços e símbolos.',
     },
@@ -41,11 +41,11 @@ const MISSION_16 = {
       bubble:'<code>==</code> para strings compara o conteúdo, não a referência (diferente de Java). Usa comparação de valor.',
       q:'Como comparar se duas strings têm o mesmo conteúdo em C#?',
       hint:'Mais simples que você pensa',
-      opts:[
+      opts: [
         {t:'str1.Equals(str2) — == não funciona para strings', ok:false},
-        {t:'str1 == str2 — compara conteúdo diretamente', ok:true},
-        {t:'str1.CompareTo(str2) == 0', ok:false},
         {t:'str1.ReferenceEquals(str2)', ok:false},
+        {t:'str1.CompareTo(str2) == 0', ok:false},
+        {t:'str1 == str2 — compara conteúdo diretamente', ok:true},
       ],
       exp:'Em C#, "==" para strings compara conteúdo. "Leon" == "Leon" = true. Diferente de Java onde == compara referência.',
     },
@@ -101,11 +101,11 @@ const MISSION_16 = {
       code:`<span class="kw">string</span> input = <span class="st">"  Leon Kennedy  "</span>;\n<span class="kw">string</span> resultado = input.<span class="mt">Trim</span>().<span class="mt">ToUpper</span>().\n    <span class="mt">Replace</span>(<span class="st">" "</span>, <span class="st">"_"</span>);\nConsole.<span class="mt">WriteLine</span>(resultado);`,
       q:'O que será exibido?',
       hint:'Trim → maiúsculas → troca espaço por _',
-      opts:[
-        {t:'Leon Kennedy', ok:false},
-        {t:'LEON_KENNEDY', ok:true},
-        {t:'leon_kennedy', ok:false},
+      opts: [
         {t:'  LEON KENNEDY  ', ok:false},
+        {t:'Leon Kennedy', ok:false},
+        {t:'leon_kennedy', ok:false},
+        {t:'LEON_KENNEDY', ok:true},
       ],
       exp:'Trim() → "Leon Kennedy". ToUpper() → "LEON KENNEDY". Replace(" ","_") → "LEON_KENNEDY".',
     },
@@ -117,11 +117,11 @@ const MISSION_16 = {
       code:`<span class="kw">string</span> missao = <span class="st">"Infiltrar,Resgatar,Escapar"</span>;\n<span class="kw">string</span>[] etapas = missao.<span class="mt">Split</span>(<span class="st">','</span>);\nConsole.<span class="mt">WriteLine</span>(etapas.<span class="mt">Length</span>);\nConsole.<span class="mt">WriteLine</span>(etapas[<span class="nm">1</span>]);`,
       q:'O que será exibido?',
       hint:'Split divide pela vírgula em 3 partes',
-      opts:[
+      opts: [
         {t:'3 e Infiltrar', ok:false},
-        {t:'3 e Resgatar', ok:true},
-        {t:'2 e Resgatar', ok:false},
         {t:'Infiltrar,Resgatar,Escapar', ok:false},
+        {t:'2 e Resgatar', ok:false},
+        {t:'3 e Resgatar', ok:true},
       ],
       exp:'Split(",") cria array: ["Infiltrar","Resgatar","Escapar"]. Length = 3. etapas[1] = "Resgatar".',
     },
@@ -133,9 +133,9 @@ const MISSION_16 = {
       code:`<span class="kw">string</span> codigo = <span class="st">"RE4-LEON-DSO"</span>;\n<span class="kw">string</span> agente = codigo.<span class="mt">Substring</span>(<span class="nm">4</span>, <span class="nm">4</span>);\nConsole.<span class="mt">WriteLine</span>(agente);`,
       q:'O que será exibido?',
       hint:'Substring(startIndex, length) — começa no índice 4 e pega 4 chars',
-      opts:[
-        {t:'RE4-', ok:false},{t:'LEON', ok:true},
-        {t:'-DSO', ok:false},{t:'LEON-', ok:false},
+      opts: [
+        {t:'RE4-', ok:false},{t:'LEON-', ok:false},
+        {t:'-DSO', ok:false},{t:'LEON', ok:true},
       ],
       exp:'"RE4-LEON-DSO": índice 4 = \'L\'. Pega 4 chars: L-E-O-N = "LEON". Substring(startIndex, length).',
     },
@@ -147,9 +147,9 @@ const MISSION_16 = {
       code:`<span class="kw">string</span> msg = <span class="st">"Missão: Resgatar Ashley"</span>;\n<span class="kw">int</span> pos = msg.<span class="mt">IndexOf</span>(<span class="st">"Ashley"</span>);\nConsole.<span class="mt">WriteLine</span>(pos);`,
       q:'Qual é a posição de início de "Ashley"?',
       hint:'Conta a partir do índice 0',
-      opts:[
+      opts: [
+        {t:'-1', ok:false},{t:'0', ok:false},
         {t:'17', ok:true},{t:'6', ok:false},
-        {t:'0', ok:false},{t:'-1', ok:false},
       ],
       exp:'"Missão: Resgatar Ashley" — "Ashley" começa no índice 17. IndexOf retorna -1 se não encontrar.',
     },

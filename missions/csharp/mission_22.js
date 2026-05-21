@@ -13,7 +13,7 @@ const MISSION_22 = {
       bubble:'<code>TryGetValue(chave, out valor)</code> é o padrão mais seguro para acessar Dictionary — não lança exceção se a chave não existe.',
       q:'Por que preferir TryGetValue() a dic[chave]?',
       hint:'Segurança primeiro',
-      opts:[
+      opts: [
         {t:'TryGetValue é mais rápido', ok:false},
         {t:'TryGetValue não lança KeyNotFoundException se a chave não existir', ok:true},
         {t:'dic[chave] não funciona com string', ok:false},
@@ -28,9 +28,9 @@ const MISSION_22 = {
       bubble:'Para iterar um Dictionary, podemos usar foreach com <code>KeyValuePair&lt;K,V&gt;</code> ou desestruturar com <code>var (k, v)</code>.',
       q:'Qual sintaxe moderna para desestruturar um par de Dictionary no foreach?',
       hint:'C# 7+ permite desestruturação',
-      opts:[
-        {t:'foreach (KeyValuePair<string,int> par in dic)', ok:false},
+      opts: [
         {t:'foreach (var (chave, valor) in dic)', ok:true},
+        {t:'foreach (KeyValuePair<string,int> par in dic)', ok:false},
         {t:'for (int i = 0; i < dic.Count; i++)', ok:false},
         {t:'dic.ForEach((k,v) => {})', ok:false},
       ],
@@ -43,7 +43,7 @@ const MISSION_22 = {
       bubble:'<code>Dictionary.GetValueOrDefault(chave, padrão)</code> retorna o valor ou um padrão se a chave não existir.',
       q:'O que GetValueOrDefault("Lança", 0) retorna se "Lança" não estiver no Dictionary?',
       hint:'O segundo parâmetro é o valor padrão',
-      opts:[
+      opts: [
         {t:'Lança exceção', ok:false},
         {t:'null', ok:false},
         {t:'0 — o valor padrão especificado', ok:true},
@@ -118,10 +118,10 @@ const MISSION_22 = {
       code:`<span class="kw">var</span> hps = <span class="kw">new</span> Dictionary&lt;<span class="kw">string</span>,<span class="kw">int</span>&gt;\n    { [<span class="st">"Leon"</span>] = <span class="nm">80</span>, [<span class="st">"Ashley"</span>] = <span class="nm">60</span> };\n\n<span class="kw">if</span> (hps.<span class="mt">TryGetValue</span>(<span class="st">"Ada"</span>, <span class="kw">out int</span> hp))\n    Console.<span class="mt">WriteLine</span>(<span class="st">$"Ada: {hp}"</span>);\n<span class="kw">else</span>\n    Console.<span class="mt">WriteLine</span>(<span class="st">"Ada não encontrada"</span>);`,
       q:'O que será exibido?',
       hint:'"Ada" está no Dictionary?',
-      opts:[
-        {t:'Ada: 0', ok:false},
+      opts: [
         {t:'Ada não encontrada', ok:true},
         {t:'Exceção KeyNotFoundException', ok:false},
+        {t:'Ada: 0', ok:false},
         {t:'Ada: 80', ok:false},
       ],
       exp:'"Ada" não é chave no Dictionary. TryGetValue retorna false → cai no else → "Ada não encontrada". Sem exceção.',
@@ -134,9 +134,9 @@ const MISSION_22 = {
       code:`<span class="kw">string</span>[] kills = {<span class="st">"Ganado"</span>,<span class="st">"Cultista"</span>,<span class="st">"Ganado"</span>,<span class="st">"Ganado"</span>,<span class="st">"Cultista"</span>};\n<span class="kw">var</span> contagem = <span class="kw">new</span> Dictionary&lt;<span class="kw">string</span>,<span class="kw">int</span>&gt;();\n<span class="kw">foreach</span> (<span class="kw">var</span> k <span class="kw">in</span> kills)\n    contagem[k] = contagem.<span class="mt">GetValueOrDefault</span>(k, <span class="nm">0</span>) + <span class="nm">1</span>;\nConsole.<span class="mt">WriteLine</span>(contagem[<span class="st">"Ganado"</span>]);`,
       q:'Quantos Ganados foram contados?',
       hint:'Aparecem 3 vezes no array',
-      opts:[
-        {t:'1', ok:false},{t:'2', ok:false},
-        {t:'3', ok:true},{t:'5', ok:false},
+      opts: [
+        {t:'3', ok:true},{t:'2', ok:false},
+        {t:'1', ok:false},{t:'5', ok:false},
       ],
       exp:'"Ganado" aparece 3 vezes. GetValueOrDefault retorna 0 se não existir, incrementa +1 a cada ocorrência. contagem["Ganado"] = 3.',
     },
@@ -148,9 +148,9 @@ const MISSION_22 = {
       code:`<span class="kw">var</span> original = <span class="kw">new</span> Dictionary&lt;<span class="kw">string</span>,<span class="kw">int</span>&gt;\n    { [<span class="st">"Leon"</span>]=<span class="nm">1</span>, [<span class="st">"Ada"</span>]=<span class="nm">2</span>, [<span class="st">"Ashley"</span>]=<span class="nm">3</span> };\n<span class="kw">var</span> invertido = <span class="kw">new</span> Dictionary&lt;<span class="kw">int</span>,<span class="kw">string</span>&gt;();\n<span class="kw">foreach</span> (<span class="kw">var</span> (k,v) <span class="kw">in</span> original)\n    invertido[v] = k;\nConsole.<span class="mt">WriteLine</span>(invertido[<span class="nm">2</span>]);`,
       q:'O que será exibido?',
       hint:'Chave 2 no dicionário invertido',
-      opts:[
-        {t:'Leon', ok:false},{t:'Ashley', ok:false},
-        {t:'Ada', ok:true},{t:'2', ok:false},
+      opts: [
+        {t:'Ada', ok:true},{t:'Ashley', ok:false},
+        {t:'Leon', ok:false},{t:'2', ok:false},
       ],
       exp:'original: Leon→1, Ada→2, Ashley→3. Invertido: 1→Leon, 2→Ada, 3→Ashley. invertido[2] = "Ada".',
     },
@@ -162,9 +162,9 @@ const MISSION_22 = {
       code:`<span class="kw">var</span> acoes = <span class="kw">new</span> Dictionary&lt;<span class="kw">string</span>, Action&gt;\n{\n    [<span class="st">"atacar"</span>]    = () => Console.<span class="mt">WriteLine</span>(<span class="st">"Bang!"</span>),\n    [<span class="st">"recarregar"</span>] = () => Console.<span class="mt">WriteLine</span>(<span class="st">"Clique!"</span>),\n    [<span class="st">"fugir"</span>]     = () => Console.<span class="mt">WriteLine</span>(<span class="st">"Correndo!"</span>)\n};\n<span class="kw">string</span> cmd = <span class="st">"recarregar"</span>;\nacoes[cmd]();`,
       q:'O que será exibido?',
       hint:'O comando é "recarregar"',
-      opts:[
-        {t:'Bang!', ok:false},{t:'Correndo!', ok:false},
-        {t:'Clique!', ok:true},{t:'Erro', ok:false},
+      opts: [
+        {t:'Clique!', ok:true},{t:'Bang!', ok:false},
+        {t:'Correndo!', ok:false},{t:'Erro', ok:false},
       ],
       exp:'acoes["recarregar"] retorna a lambda que imprime "Clique!". A "()" no final a executa. Padrão dispatch table — substitui switch/case.',
     },

@@ -40,8 +40,8 @@ const MISSION_66 = {
       q: 'Para comparar nomes de arquivos como "foto.PNG" == "foto.png", qual StringComparison usar?',
       hint: 'Sem case, sem cultura',
       opts: [
-        { t: 'StringComparison.CurrentCulture', ok: false },
         { t: 'StringComparison.OrdinalIgnoreCase', ok: true },
+        { t: 'StringComparison.CurrentCulture', ok: false },
         { t: 'StringComparison.InvariantCulture', ok: false },
         { t: 'string.ToLower() e ==', ok: false },
       ],
@@ -135,9 +135,9 @@ const MISSION_66 = {
       q: 'O que será exibido?',
       hint: 'Dois padrões IP no texto',
       opts: [
-        { t: '192.168.1.5', ok: false },
-        { t: '192.168.1.5, 10.0.0.1', ok: true },
         { t: 'Erro — Matches retorna MatchCollection, não LINQ', ok: false },
+        { t: '192.168.1.5, 10.0.0.1', ok: true },
+        { t: '192.168.1.5', ok: false },
         { t: '10.0.0.1', ok: false },
       ],
       exp: 'Regex encontra "192.168.1.5" e "10.0.0.1". Matches retorna MatchCollection que implementa IEnumerable. Select extrai .Value. Join: "192.168.1.5, 10.0.0.1".',
@@ -151,9 +151,9 @@ const MISSION_66 = {
       q: 'O que será exibido?',
       hint: 'Remove tudo que não é letra ou espaço',
       opts: [
-        { t: 'Leon Kennedy', ok: false },
-        { t: 'Leon Knndy', ok: true },
         { t: 'LeonKnndy', ok: false },
+        { t: 'Leon Knndy', ok: true },
+        { t: 'Leon Kennedy', ok: false },
         { t: 'Erro — Regex inválida', ok: false },
       ],
       exp: '"[^a-zA-Z ]" = classe negada: qualquer coisa que NÃO é letra ou espaço. Replace por "". "3" removidos: "Leon Knndy".',

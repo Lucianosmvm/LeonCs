@@ -14,9 +14,9 @@ const MISSION_43 = {
       q: 'O que "if (obj is Inimigo e && e.HP > 0)" faz?',
       hint: 'Verifica tipo E extrai numa variável E aplica condição',
       opts: [
+        { t: 'Lança exceção se obj não for Inimigo', ok: false },
         { t: 'Apenas verifica se obj é Inimigo', ok: false },
         { t: 'Verifica se obj é Inimigo, extrai para "e" e verifica se HP > 0 — tudo numa linha', ok: true },
-        { t: 'Lança exceção se obj não for Inimigo', ok: false },
         { t: 'É equivalente a obj == Inimigo', ok: false },
       ],
       exp: '"is Inimigo e" combina type-check + cast + declaração. "&&" aplica condição extra. Tudo em um if — sem cast explícito.',
@@ -30,8 +30,8 @@ const MISSION_43 = {
       hint: 'Retornam valor, são mais compactas',
       opts: [
         { t: 'São mais rápidas em runtime', ok: false },
-        { t: 'Retornam valor, são expressões (não statements), o compilador garante exaustividade', ok: true },
         { t: 'Permitem mais cases', ok: false },
+        { t: 'Retornam valor, são expressões (não statements), o compilador garante exaustividade', ok: true },
         { t: 'Substituem if/else completamente', ok: false },
       ],
       exp: 'Switch expression: retorna valor, cada arm usa "=>", o compilador avisa se não cobrir todos os casos. Mais seguro e expressivo.',
@@ -59,8 +59,8 @@ const MISSION_43 = {
       q: 'O que "inimigo is { HP: > 50, Vivo: true }" verifica?',
       hint: 'Verifica múltiplas propriedades',
       opts: [
-        { t: 'Apenas se inimigo não é null', ok: false },
         { t: 'Se HP e Vivo são propriedades do tipo', ok: false },
+        { t: 'Apenas se inimigo não é null', ok: false },
         { t: 'Se HP > 50 E Vivo == true ao mesmo tempo', ok: true },
         { t: 'Se HP OU Vivo satisfazem a condição', ok: false },
       ],
@@ -119,8 +119,8 @@ const MISSION_43 = {
       q: 'O que será exibido?',
       hint: 'Miniboss é testado antes de Inimigo',
       opts: [
-        { t: 'S', ok: false },
         { t: 'A', ok: true },
+        { t: 'S', ok: false },
         { t: 'B', ok: false },
         { t: '?', ok: false },
       ],
@@ -151,9 +151,9 @@ const MISSION_43 = {
       q: 'O que será exibido?',
       hint: '(true,false) e (false,true)',
       opts: [
-        { t: 'Atira! e Fugir!', ok: false },
         { t: 'Recarregar e Fugir!', ok: true },
         { t: 'Recarregar e Recarregar', ok: false },
+        { t: 'Atira! e Fugir!', ok: false },
         { t: 'Fugir! e Atira!', ok: false },
       ],
       exp: 'Combate(true,false): (true,false) → "Recarregar". Combate(false,true): (false,_) → "Fugir!" (temArma=false, municao irrelevante).',
@@ -167,9 +167,9 @@ const MISSION_43 = {
       q: 'O que será exibido?',
       hint: '5→Crítico, 45→Ferido, 80→Saudável, 150→Saudável',
       opts: [
-        { t: 'Crítico Ferido Saudável Saudável', ok: true },
         { t: 'Crítico Crítico Ferido Saudável', ok: false },
         { t: 'Morto Crítico Ferido Saudável', ok: false },
+        { t: 'Crítico Ferido Saudável Saudável', ok: true },
         { t: 'Crítico Ferido Ferido Saudável', ok: false },
       ],
       exp: '5: <20 → Crítico. 45: <60 → Ferido. 80: _ → Saudável. 150: _ → Saudável. Saída: "Crítico Ferido Saudável Saudável".',

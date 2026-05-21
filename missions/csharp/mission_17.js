@@ -13,10 +13,10 @@ const MISSION_17 = {
       bubble:'<strong>StringBuilder</strong> é mutável e eficiente para concatenar muitas strings. Evita criar dezenas de objetos string temporários.',
       q:'Quando usar StringBuilder em vez de string + string?',
       hint:'Quando há muitas concatenações',
-      opts:[
-        {t:'Sempre — StringBuilder é sempre melhor', ok:false},
-        {t:'Quando há muitas concatenações em loop — evita desperdício de memória', ok:true},
+      opts: [
         {t:'Apenas para strings maiores que 100 chars', ok:false},
+        {t:'Quando há muitas concatenações em loop — evita desperdício de memória', ok:true},
+        {t:'Sempre — StringBuilder é sempre melhor', ok:false},
         {t:'StringBuilder não existe em C#', ok:false},
       ],
       exp:'Em loop com 1000 concatenações, "s += x" cria 1000 objetos string. StringBuilder reutiliza um buffer — muito mais eficiente.',
@@ -103,9 +103,9 @@ const MISSION_17 = {
       code:`<span class="kw">var</span> sb = <span class="kw">new</span> StringBuilder();\n<span class="kw">string</span>[] kills = {<span class="st">"Ganado"</span>,<span class="st">"Cultista"</span>,<span class="st">"Regenerador"</span>};\n<span class="kw">foreach</span>(<span class="kw">var</span> k <span class="kw">in</span> kills)\n    sb.<span class="mt">AppendLine</span>(<span class="st">$"✓ {k}"</span>);\nConsole.<span class="mt">Write</span>(sb.<span class="mt">ToString</span>());`,
       q:'Quantas linhas serão exibidas?',
       hint:'Um item, uma linha',
-      opts:[
-        {t:'1', ok:false},{t:'2', ok:false},
-        {t:'3', ok:true},{t:'0', ok:false},
+      opts: [
+        {t:'1', ok:false},{t:'3', ok:true},
+        {t:'2', ok:false},{t:'0', ok:false},
       ],
       exp:'AppendLine adiciona cada kill em uma linha. ToString() converte tudo. 3 elementos = 3 linhas.',
     },
@@ -117,9 +117,9 @@ const MISSION_17 = {
       code:`<span class="kw">static bool</span> <span class="mt">Palindromo</span>(<span class="kw">string</span> s)\n{\n    <span class="kw">char</span>[] c = s.<span class="mt">ToCharArray</span>();\n    Array.<span class="mt">Reverse</span>(c);\n    <span class="kw">return</span> s == <span class="kw">new string</span>(c);\n}\nConsole.<span class="mt">WriteLine</span>(<span class="mt">Palindromo</span>(<span class="st">"arara"</span>));`,
       q:'O que será exibido?',
       hint:'"arara" ao contrário é...',
-      opts:[
-        {t:'False', ok:false},{t:'arara', ok:false},
-        {t:'True', ok:true},{t:'Erro', ok:false},
+      opts: [
+        {t:'False', ok:false},{t:'True', ok:true},
+        {t:'arara', ok:false},{t:'Erro', ok:false},
       ],
       exp:'"arara" invertida = "arara". s == new string(c) → "arara" == "arara" = True.',
     },
@@ -131,9 +131,9 @@ const MISSION_17 = {
       code:`<span class="kw">int</span>[] scores = {<span class="nm">100</span>, <span class="nm">2500</span>, <span class="nm">45</span>};\n<span class="kw">foreach</span> (<span class="kw">int</span> s <span class="kw">in</span> scores)\n    Console.<span class="mt">WriteLine</span>(s.<span class="mt">ToString</span>().<span class="mt">PadLeft</span>(<span class="nm">6</span>));`,
       q:'Como os números aparecerão alinhados?',
       hint:'PadLeft(6) alinha à direita com 6 caracteres',
-      opts:[
-        {t:'100, 2500, 45 (sem alinhamento)', ok:false},
+      opts: [
         {t:'Todos alinhados à direita com espaços à esquerda', ok:true},
+        {t:'100, 2500, 45 (sem alinhamento)', ok:false},
         {t:'Todos com zeros à esquerda', ok:false},
         {t:'Erro de compilação', ok:false},
       ],
@@ -147,7 +147,7 @@ const MISSION_17 = {
       code:`<span class="kw">string</span> nome = <span class="st">"Leon S. Kennedy"</span>;\n<span class="kw">int</span> vogais = nome.<span class="mt">Count</span>(c => <span class="st">"aeiouAEIOU"</span>.<span class="mt">Contains</span>(c));\nConsole.<span class="mt">WriteLine</span>(vogais);`,
       q:'Quantas vogais tem "Leon S. Kennedy"?',
       hint:'e, o, e, n, e, d - conte apenas as vogais',
-      opts:[
+      opts: [
         {t:'4', ok:false},{t:'3', ok:false},
         {t:'5', ok:true},{t:'6', ok:false},
       ],

@@ -13,11 +13,11 @@ const MISSION_18 = {
       bubble:'O tipo <strong>char</strong> representa um único caractere Unicode. Internamente, é um número de 16 bits.',
       q:'Por que podemos fazer aritmética com char em C#?',
       hint:'Char é um número por baixo',
-      opts:[
-        {t:'Por um bug histórico do C#', ok:false},
+      opts: [
+        {t:'Não podemos fazer aritmética com char', ok:false},
         {t:'Porque char armazena o código numérico Unicode do caractere', ok:true},
         {t:'Chars são strings de tamanho 1', ok:false},
-        {t:'Não podemos fazer aritmética com char', ok:false},
+        {t:'Por um bug histórico do C#', ok:false},
       ],
       exp:"char 'A' = código 65. 'A' + 1 = 66 = 'B'. Isso permite percorrer o alfabeto: for (char c = 'A'; c <= 'Z'; c++).",
     },
@@ -28,11 +28,11 @@ const MISSION_18 = {
       bubble:'<code>char.IsLetter()</code>, <code>char.IsDigit()</code>, <code>char.IsWhiteSpace()</code> permitem classificar caracteres.',
       q:'Como verificar se um caractere é uma letra?',
       hint:'Método estático da struct char',
-      opts:[
-        {t:'c >= "a" && c <= "z"', ok:false},
+      opts: [
         {t:'char.IsLetter(c)', ok:true},
         {t:'c.IsAlpha()', ok:false},
         {t:'c.GetType() == char', ok:false},
+        {t:'c >= "a" && c <= "z"', ok:false},
       ],
       exp:'"char.IsLetter(c)" retorna true para a-z e A-Z e letras de outros idiomas. Mais correto que comparar com a-z.',
     },
@@ -43,11 +43,11 @@ const MISSION_18 = {
       bubble:'<code>Convert</code> vs <code>Parse</code>: Convert.ToInt32(null) retorna 0; int.Parse(null) lança exceção.',
       q:'Qual método é mais seguro para converter um valor que pode ser null?',
       hint:'Um tolera null, o outro explode',
-      opts:[
-        {t:'int.Parse() — mais rápido', ok:false},
-        {t:'Convert.ToInt32() — trata null como 0', ok:true},
+      opts: [
         {t:'São equivalentes para null', ok:false},
+        {t:'Convert.ToInt32() — trata null como 0', ok:true},
         {t:'Nenhum — use sempre TryParse', ok:false},
+        {t:'int.Parse() — mais rápido', ok:false},
       ],
       exp:'"Convert.ToInt32(null)" = 0. "int.Parse(null)" lança ArgumentNullException. Para máxima segurança, use TryParse.',
     },
@@ -103,11 +103,11 @@ const MISSION_18 = {
       code:`<span class="kw">for</span> (<span class="kw">char</span> c = <span class="st">'A'</span>; c <= <span class="st">'E'</span>; c++)\n    Console.<span class="mt">Write</span>(c + <span class="st">" "</span>);`,
       q:'O que será exibido?',
       hint:"'A' a 'E' incrementando",
-      opts:[
-        {t:'65 66 67 68 69', ok:false},
-        {t:'A B C D E', ok:true},
+      opts: [
         {t:'ABCDE', ok:false},
+        {t:'A B C D E', ok:true},
         {t:'A A A A A', ok:false},
+        {t:'65 66 67 68 69', ok:false},
       ],
       exp:"c vai de 'A' (65) até 'E' (69). c++ incrementa o código. Console.Write(char) exibe a letra: A B C D E.",
     },
@@ -119,9 +119,9 @@ const MISSION_18 = {
       code:`<span class="kw">string</span> msg = <span class="st">"ACE"</span>;\n<span class="kw">int</span> chave = <span class="nm">2</span>;\n<span class="kw">foreach</span> (<span class="kw">char</span> c <span class="kw">in</span> msg)\n    Console.<span class="mt">Write</span>((<span class="kw">char</span>)(c + chave));`,
       q:'Qual será a mensagem cifrada?',
       hint:"A+2='C', C+2='E', E+2='G'",
-      opts:[
-        {t:'ACE', ok:false},{t:'BDF', ok:false},
-        {t:'CEG', ok:true},{t:'246', ok:false},
+      opts: [
+        {t:'BDF', ok:false},{t:'CEG', ok:true},
+        {t:'246', ok:false},{t:'ACE', ok:false},
       ],
       exp:"A(65)+2=67='C'. C(67)+2=69='E'. E(69)+2=71='G'. Resultado: \"CEG\". Cifra de César com chave 2.",
     },
@@ -133,9 +133,9 @@ const MISSION_18 = {
       code:`<span class="kw">string</span> texto = <span class="st">"Leon S Kennedy"</span>;\n<span class="kw">int</span> maiusculas = <span class="nm">0</span>;\n<span class="kw">foreach</span> (<span class="kw">char</span> c <span class="kw">in</span> texto)\n    <span class="kw">if</span> (<span class="kw">char</span>.<span class="mt">IsUpper</span>(c)) maiusculas++;\nConsole.<span class="mt">WriteLine</span>(maiusculas);`,
       q:'Quantas maiúsculas tem "Leon S Kennedy"?',
       hint:'Conte: L, S, K',
-      opts:[
-        {t:'2', ok:false},{t:'4', ok:false},
-        {t:'3', ok:true},{t:'1', ok:false},
+      opts: [
+        {t:'1', ok:false},{t:'3', ok:true},
+        {t:'4', ok:false},{t:'2', ok:false},
       ],
       exp:'"Leon S Kennedy": maiúsculas = L, S, K = 3. char.IsUpper() detecta corretamente maiúsculas.',
     },

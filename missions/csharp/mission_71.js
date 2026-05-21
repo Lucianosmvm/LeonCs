@@ -25,9 +25,9 @@ const MISSION_71 = {
       q: 'O que "var r2 = r1 with { HP = 50 }" faz?',
       hint: 'O original não muda',
       opts: [
-        { t: 'Modifica r1.HP para 50', ok: false },
         { t: 'Cria r2 como cópia de r1, mas com HP = 50. r1 permanece inalterado', ok: true },
         { t: 'Cria r2 sem HP (herda só HP=50)', ok: false },
+        { t: 'Modifica r1.HP para 50', ok: false },
         { t: 'Erro — with exige todos os campos', ok: false },
       ],
       exp: '"with" = non-destructive mutation. Cria nova instância com os campos especificados alterados. Todos os outros copiados do original.',
@@ -41,8 +41,8 @@ const MISSION_71 = {
       hint: 'Tudo de uma vez',
       opts: [
         { t: 'Apenas o construtor', ok: false },
-        { t: 'Construtor, propriedades init-only, Equals estrutural, GetHashCode, ToString e Deconstruct', ok: true },
         { t: 'Apenas Equals e GetHashCode', ok: false },
+        { t: 'Construtor, propriedades init-only, Equals estrutural, GetHashCode, ToString e Deconstruct', ok: true },
         { t: 'Apenas propriedades get-only', ok: false },
       ],
       exp: 'Record posicional: 1 linha gera construtor, propriedades com init, ToString formatado, Equals por valor, GetHashCode por valor e Deconstruct.',
@@ -55,9 +55,9 @@ const MISSION_71 = {
       q: 'Por que dois records de tipos diferentes não são iguais mesmo com dados iguais?',
       hint: 'O tipo faz parte da igualdade',
       opts: [
+        { t: 'Records usam comparação por referência', ok: false },
         { t: 'Bug do compilador', ok: false },
         { t: 'Records comparam por tipo além dos dados — herança correta de igualdade', ok: true },
-        { t: 'Records usam comparação por referência', ok: false },
         { t: 'Apenas records posicionais têm igualdade', ok: false },
       ],
       exp: 'record Inimigo(string Nome) e record Chefe(string Nome) : Inimigo — Inimigo("Leon") != Chefe("Leon") pois os tipos EqualityContract diferem.',
@@ -70,9 +70,9 @@ const MISSION_71 = {
       q: 'Qual a diferença entre "record" e "record struct"?',
       hint: 'Heap vs stack',
       opts: [
+        { t: '"record struct" não tem igualdade estrutural', ok: false },
         { t: 'São idênticos', ok: false },
         { t: '"record" aloca no heap (tipo de referência); "record struct" aloca no stack (tipo de valor)', ok: true },
-        { t: '"record struct" não tem igualdade estrutural', ok: false },
         { t: '"record struct" não suporta with expression', ok: false },
       ],
       exp: '"record" = class com conveniências. "record struct" = struct com conveniências. Semântica de valor: cópia ao atribuir. Ambos suportam "with".',
@@ -120,8 +120,8 @@ const MISSION_71 = {
       hint: 'Cada with cria nova instância acumulando mudanças',
       opts: [
         { t: 'Infiltrar 100 False', ok: false },
-        { t: 'Infiltrar 200 True', ok: true },
         { t: 'Infiltrar 200 False', ok: false },
+        { t: 'Infiltrar 200 True', ok: true },
         { t: 'Erro — with encadeado', ok: false },
       ],
       exp: 'm1: Nome=Infiltrar, XP=100, Ativa=false. m2 = m1 with XP=200: Nome=Infiltrar, XP=200, Ativa=false. m3 = m2 with Ativa=true: "Infiltrar 200 True".',
@@ -151,8 +151,8 @@ const MISSION_71 = {
       q: 'O que será exibido?',
       hint: 'hp não muda; hpBaixo tem Atual=15',
       opts: [
-        { t: '75/100 → 15/100', ok: true },
         { t: '15/100 → 15/100', ok: false },
+        { t: '75/100 → 15/100', ok: true },
         { t: '75/100 → 75/100', ok: false },
         { t: 'Erro — record struct com with', ok: false },
       ],

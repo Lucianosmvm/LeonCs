@@ -25,9 +25,9 @@ const MISSION_74 = {
       q: 'Qual a principal vantagem dos Source Generators sobre Reflection?',
       hint: 'Tempo de compilação vs runtime',
       opts: [
+        { t: 'Source Generators funcionam apenas no .NET 5', ok: false },
         { t: 'Source Generators são mais fáceis de escrever', ok: false },
         { t: 'O código é gerado em compilação — sem custo de Reflection em runtime, AOT-compatible', ok: true },
-        { t: 'Source Generators funcionam apenas no .NET 5', ok: false },
         { t: 'Source Generators permitem modificar código existente', ok: false },
       ],
       exp: 'Source Generators: código gerado antes de rodar. Sem JIT de Reflection, sem dynamic. Compatível com AOT (Ahead-of-Time compilation) para WebAssembly e mobile.',
@@ -40,8 +40,8 @@ const MISSION_74 = {
       q: 'Por que usar [JsonSerializable] com JsonSerializerContext em apps AOT?',
       hint: 'AOT não suporta Reflection',
       opts: [
-        { t: 'Para serializar tipos anônimos', ok: false },
         { t: 'AOT não suporta Reflection em runtime — Source Generator gera o código de serialização em compilação', ok: true },
+        { t: 'Para serializar tipos anônimos', ok: false },
         { t: 'Para serialização mais lenta porém precisa', ok: false },
         { t: '[JsonSerializable] é decorativo', ok: false },
       ],
@@ -56,8 +56,8 @@ const MISSION_74 = {
       hint: 'Performance do IDE',
       opts: [
         { t: 'IIncrementalGenerator gera código mais rápido em runtime', ok: false },
-        { t: 'Incremental recalcula apenas partes que mudaram — evita slowdown do IDE em projetos grandes', ok: true },
         { t: 'ISourceGenerator não funciona no .NET 6+', ok: false },
+        { t: 'Incremental recalcula apenas partes que mudaram — evita slowdown do IDE em projetos grandes', ok: true },
         { t: 'São equivalentes para projetos pequenos apenas', ok: false },
       ],
       exp: 'ISourceGenerator roda completo a cada mudança → IDE lento. IIncrementalGenerator: pipeline de transformações com cache — só recalcula o que mudou.',
@@ -151,8 +151,8 @@ const MISSION_74 = {
       q: 'O que será exibido?',
       hint: 'OnProcessado chama antes de "Processado:"',
       opts: [
-        { t: 'Processado: 42', ok: false },
         { t: 'Pre:42 Processado: 42', ok: true },
+        { t: 'Processado: 42', ok: false },
         { t: 'Pre:42', ok: false },
         { t: 'Erro — partial void não pode ter implementação', ok: false },
       ],

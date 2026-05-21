@@ -25,9 +25,9 @@ const MISSION_84 = {
       q: 'Qual o tipo de comunicação que o SignalR habilita entre cliente e servidor?',
       hint: 'Bidirecional e em tempo real',
       opts: [
+        { t: 'Apenas request/response como HTTP', ok: false },
         { t: 'Apenas servidor → cliente (push)', ok: false },
         { t: 'Bidirecional: servidor pode chamar métodos do cliente e vice-versa', ok: true },
-        { t: 'Apenas request/response como HTTP', ok: false },
         { t: 'Apenas para aplicações mobile', ok: false },
       ],
       exp: 'SignalR: Hub no servidor. Cliente chama métodos do Hub. Hub chama métodos do cliente via Clients.All.SendAsync("Metodo", dados). Verdadeiramente bidirecional.',
@@ -56,8 +56,8 @@ const MISSION_84 = {
       hint: 'O que chamou',
       opts: [
         { t: 'Clients.All', ok: false },
-        { t: 'Clients.Caller', ok: true },
         { t: 'Clients.Others', ok: false },
+        { t: 'Clients.Caller', ok: true },
         { t: 'Clients.Self', ok: false },
       ],
       exp: 'Clients.Caller: apenas o cliente que invocou. Clients.Others: todos exceto o caller. Clients.All: todos conectados. Clients.Group("g"): grupo específico.',
@@ -70,8 +70,8 @@ const MISSION_84 = {
       q: 'Qual cenário de uso típico para Groups no SignalR?',
       hint: 'Chat rooms, salas',
       opts: [
-        { t: 'Limitar conexões simultâneas', ok: false },
         { t: 'Chat rooms, salas de jogos — enviar mensagem só para membros de um grupo', ok: true },
+        { t: 'Limitar conexões simultâneas', ok: false },
         { t: 'Autenticação de usuários', ok: false },
         { t: 'Groups substituem conexões individuais', ok: false },
       ],
@@ -141,8 +141,8 @@ Console.<span class="mt">WriteLine</span>(clients.Messages[<span class="nm">0</s
       q: 'O que será exibido?',
       hint: 'method:msg format',
       opts: [
-        { t: 'Receber Alerta', ok: false },
         { t: 'Receber:Alerta', ok: true },
+        { t: 'Receber Alerta', ok: false },
         { t: 'Alerta', ok: false },
         { t: 'Erro — await em Task.CompletedTask', ok: false },
       ],
@@ -191,8 +191,8 @@ Console.<span class="mt">WriteLine</span>(<span class="st">$"Online: {connected 
       q: 'O que será exibido?',
       hint: '3 connects, 1 disconnect',
       opts: [
-        { t: 'Online: 2', ok: true },
         { t: 'Online: 3', ok: false },
+        { t: 'Online: 2', ok: true },
         { t: 'Online: 1', ok: false },
         { t: 'Online: 4', ok: false },
       ],

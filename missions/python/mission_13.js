@@ -93,10 +93,10 @@ const MISSION_PYTHON_13 = {
       bubble: 'List comprehension é mais rápida que loop explícito para operações simples.',
       q: 'Qual é a principal vantagem de list comprehension?',
       opts: [
+        { t: 'Não precisa de memória extra', ok: false },
         { t: 'É a única forma de criar listas', ok: false },
         { t: 'Código mais conciso e geralmente mais rápido que loop explícito', ok: true },
         { t: 'Funciona apenas com números', ok: false },
-        { t: 'Não precisa de memória extra', ok: false },
       ],
       exp: 'List comprehension é idiomática em Python: mais legível, concisa e otimizada internamente.',
     },

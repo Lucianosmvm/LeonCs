@@ -25,9 +25,9 @@ const MISSION_53 = {
       q: 'Por que o cancelamento em .NET é chamado de "cooperativo"?',
       hint: 'A operação precisa checar',
       opts: [
+        { t: 'Porque o cancelamento é automático após timeout', ok: false },
         { t: 'Porque precisa de dois threads cooperando', ok: false },
         { t: 'Porque o código que executa deve verificar o token e parar voluntariamente', ok: true },
-        { t: 'Porque o cancelamento é automático após timeout', ok: false },
         { t: 'Porque CancellationToken compartilha dados', ok: false },
       ],
       exp: 'Cooperativo: ninguém força a parada. O código checa token.IsCancellationRequested ou chama token.ThrowIfCancellationRequested() e para sozinho.',
@@ -40,8 +40,8 @@ const MISSION_53 = {
       q: 'Qual classe você usa para CANCELAR uma operação?',
       hint: 'Fonte do cancelamento',
       opts: [
-        { t: 'CancellationToken', ok: false },
         { t: 'CancellationTokenSource', ok: true },
+        { t: 'CancellationToken', ok: false },
         { t: 'CancelledException', ok: false },
         { t: 'TaskCanceledException', ok: false },
       ],
@@ -70,8 +70,8 @@ const MISSION_53 = {
       q: 'Como criar um cancelamento automático após 5 segundos?',
       hint: 'Source com timeout',
       opts: [
-        { t: 'new CancellationToken(5000)', ok: false },
         { t: 'new CancellationTokenSource(TimeSpan.FromSeconds(5))', ok: true },
+        { t: 'new CancellationToken(5000)', ok: false },
         { t: 'CancellationToken.WithTimeout(5)', ok: false },
         { t: 'Task.Delay(5000).ContinueWith(Cancel)', ok: false },
       ],
@@ -119,8 +119,8 @@ const MISSION_53 = {
       q: 'O que será exibido?',
       hint: 'O token já estava cancelado',
       opts: [
-        { t: 'Concluído', ok: false },
         { t: 'Cancelado!', ok: true },
+        { t: 'Concluído', ok: false },
         { t: 'Nada', ok: false },
         { t: 'Erro não tratado', ok: false },
       ],
@@ -135,9 +135,9 @@ const MISSION_53 = {
       q: 'O que será exibido?',
       hint: '200ms de timeout vs 1000ms de delay',
       opts: [
-        { t: 'OK', ok: false },
-        { t: 'Timeout!', ok: true },
         { t: 'Nada', ok: false },
+        { t: 'Timeout!', ok: true },
+        { t: 'OK', ok: false },
         { t: 'Erro — using com CancellationTokenSource', ok: false },
       ],
       exp: 'O source cancela após 200ms. Task.Delay(1000ms) é interrompida após 200ms. OperationCanceledException. "Timeout!".',
@@ -151,9 +151,9 @@ const MISSION_53 = {
       q: 'Qual o valor de i quando o loop para?',
       hint: 'Cancel em i==3, mas o while checa antes',
       opts: [
-        { t: '2', ok: false },
         { t: '3', ok: true },
         { t: '4', ok: false },
+        { t: '2', ok: false },
         { t: '5', ok: false },
       ],
       exp: 'i=1,2,3: em i=3, Cancel() é chamado. Próxima verificação do while: IsCancellationRequested=true. Loop para. i=3.',

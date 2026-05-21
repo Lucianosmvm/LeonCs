@@ -22,11 +22,11 @@ const MISSION_11 = {
       bubble:'O <strong>foreach</strong> itera sobre cada elemento de uma coleção sem gerenciar índices. Mais simples que o for para leitura.',
       q:'Qual a principal vantagem do foreach sobre o for?',
       hint:'Você não precisa gerenciar nada',
-      opts:[
-        {t:'É mais rápido que o for', ok:false},
-        {t:'Funciona apenas com arrays', ok:false},
+      opts: [
         {t:'Não exige gerenciar índice — código mais limpo e seguro', ok:true},
         {t:'Permite modificar a coleção durante a iteração', ok:false},
+        {t:'É mais rápido que o for', ok:false},
+        {t:'Funciona apenas com arrays', ok:false},
       ],
       exp:'foreach elimina erros de índice (off-by-one). Código mais limpo. Mas não acessa o índice nem modifica a coleção.',
     },
@@ -37,11 +37,11 @@ const MISSION_11 = {
       bubble:'No foreach, a variável de iteração é <strong>somente leitura</strong>. Você não pode modificar os elementos da coleção por ela.',
       q:'O que acontece se tentarmos modificar a variável do foreach?',
       hint:'Ela é readonly',
-      opts:[
+      opts: [
+        {t:'Funciona normalmente', ok:false},
+        {t:'O loop reinicia', ok:false},
         {t:'A coleção original é modificada', ok:false},
         {t:'Erro de compilação — a variável de iteração é readonly', ok:true},
-        {t:'O loop reinicia', ok:false},
-        {t:'Funciona normalmente', ok:false},
       ],
       exp:'"foreach (var item in lista) { item = novo; }" causa erro de compilação. Para modificar, use for com índice.',
     },
@@ -52,11 +52,11 @@ const MISSION_11 = {
       bubble:'O foreach funciona com qualquer coleção que implemente <strong>IEnumerable</strong>: arrays, List, Dictionary, etc.',
       q:'Quais coleções o foreach pode iterar?',
       hint:'Se implementa IEnumerable, o foreach aceita',
-      opts:[
-        {t:'Apenas arrays', ok:false},
-        {t:'Apenas List<T>', ok:false},
+      opts: [
         {t:'Qualquer coleção que implemente IEnumerable', ok:true},
         {t:'Apenas coleções de strings', ok:false},
+        {t:'Apenas arrays', ok:false},
+        {t:'Apenas List<T>', ok:false},
       ],
       exp:'foreach funciona com arrays, List, Dictionary, Stack, Queue, e qualquer coleção que implemente IEnumerable.',
     },
@@ -101,11 +101,11 @@ const MISSION_11 = {
       code:`<span class="kw">string</span>[] inimigos = {<span class="st">"Ganado"</span>, <span class="st">"Cultista"</span>, <span class="st">"Regenerador"</span>};\n<span class="kw">foreach</span> (<span class="kw">string</span> inimigo <span class="kw">in</span> inimigos)\n    Console.<span class="mt">WriteLine</span>(<span class="st">$"Eliminando: {inimigo}"</span>);`,
       q:'Quantas linhas serão exibidas?',
       hint:'Um elemento, uma linha',
-      opts:[
-        {t:'1', ok:false},
-        {t:'2', ok:false},
-        {t:'3', ok:true},
+      opts: [
         {t:'0', ok:false},
+        {t:'2', ok:false},
+        {t:'1', ok:false},
+        {t:'3', ok:true},
       ],
       exp:'O array tem 3 elementos. Foreach itera sobre cada um. 3 linhas: "Eliminando: Ganado", "...Cultista", "...Regenerador".',
     },
@@ -117,11 +117,11 @@ const MISSION_11 = {
       code:`<span class="kw">int</span>[] danos = {<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>};\n<span class="kw">int</span> soma = <span class="nm">0</span>;\n<span class="kw">foreach</span> (<span class="kw">int</span> d <span class="kw">in</span> danos)\n    soma += d;\nConsole.<span class="mt">WriteLine</span>(soma);`,
       q:'Qual o total de danos?',
       hint:'10+20+30+40',
-      opts:[
+      opts: [
+        {t:'10', ok:false},
         {t:'40', ok:false},
         {t:'100', ok:true},
         {t:'90', ok:false},
-        {t:'10', ok:false},
       ],
       exp:'soma = 10+20+30+40 = 100. Foreach acumula cada elemento na variável soma.',
     },
@@ -133,11 +133,11 @@ const MISSION_11 = {
       code:`<span class="kw">string</span>[] armas = {<span class="st">"Pistola"</span>, <span class="st">"Escopeta"</span>, <span class="st">"Rifle"</span>};\n\n<span class="cm">// Com índice:</span>\n<span class="kw">for</span> (<span class="kw">int</span> i=<span class="nm">0</span>; i<armas.<span class="mt">Length</span>; i++)\n    Console.<span class="mt">Write</span>(i + <span class="st">":"</span> + armas[i] + <span class="st">" "</span>);\nConsole.<span class="mt">WriteLine</span>();\n\n<span class="cm">// Sem índice:</span>\n<span class="kw">foreach</span> (<span class="kw">string</span> a <span class="kw">in</span> armas)\n    Console.<span class="mt">Write</span>(a + <span class="st">" "</span>);`,
       q:'Qual a diferença nas saídas?',
       hint:'Um mostra índice, outro não',
-      opts:[
+      opts: [
+        {t:'O for falha sem índice', ok:false},
         {t:'São idênticas', ok:false},
         {t:'O foreach é mais lento', ok:false},
         {t:'O for mostra "0:Pistola 1:Escopeta 2:Rifle"; o foreach mostra "Pistola Escopeta Rifle"', ok:true},
-        {t:'O for falha sem índice', ok:false},
       ],
       exp:'for com i mostra o índice: "0:Pistola 1:Escopeta 2:Rifle". foreach sem índice: "Pistola Escopeta Rifle".',
     },
@@ -149,11 +149,11 @@ const MISSION_11 = {
       code:`<span class="kw">var</span> arsenal = <span class="kw">new</span> Dictionary&lt;<span class="kw">string</span>,<span class="kw">int</span>&gt; {\n    {<span class="st">"Pistola"</span>, <span class="nm">45</span>},\n    {<span class="st">"Escopeta"</span>, <span class="nm">12</span>}\n};\n<span class="kw">foreach</span> (<span class="kw">var</span> par <span class="kw">in</span> arsenal)\n    Console.<span class="mt">WriteLine</span>(<span class="st">$"{par.Key}: {par.Value} balas"</span>);`,
       q:'O que será exibido?',
       hint:'Cada par tem Key e Value',
-      opts:[
+      opts: [
         {t:'Pistola Escopeta', ok:false},
+        {t:'Erro — Dictionary não suporta foreach', ok:false},
         {t:'Pistola: 45 balas e Escopeta: 12 balas', ok:true},
         {t:'45 12', ok:false},
-        {t:'Erro — Dictionary não suporta foreach', ok:false},
       ],
       exp:'foreach em Dictionary itera KeyValuePair. par.Key = nome, par.Value = quantidade. Exibe cada arma com sua munição.',
     },

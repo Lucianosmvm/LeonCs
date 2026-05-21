@@ -22,8 +22,8 @@ const MISSION_12 = {
       bubble:'Um <strong>array</strong> é uma coleção de tamanho <em>fixo</em> de elementos do mesmo tipo, acessados por índice começando em 0.',
       q:'Qual é o índice do primeiro elemento de um array em C#?',
       hint:'Conta do zero em programação',
-      opts:[
-        {t:'1', ok:false},{t:'-1', ok:false},
+      opts: [
+        {t:'-1', ok:false},{t:'1', ok:false},
         {t:'0', ok:true},{t:'Depende do array', ok:false},
       ],
       exp:'Arrays em C# começam no índice 0. Um array de 5 elementos tem índices 0, 1, 2, 3, 4. O último é sempre Length-1.',
@@ -35,9 +35,9 @@ const MISSION_12 = {
       bubble:'Tentar acessar um índice fora dos limites do array lança <strong>IndexOutOfRangeException</strong>.',
       q:'O que acontece ao acessar arr[5] em um array de 5 elementos?',
       hint:'O último índice válido é 4',
-      opts:[
-        {t:'Retorna null', ok:false},
+      opts: [
         {t:'Retorna 0 (valor padrão)', ok:false},
+        {t:'Retorna null', ok:false},
         {t:'Lança IndexOutOfRangeException', ok:true},
         {t:'Retorna o último elemento', ok:false},
       ],
@@ -50,7 +50,7 @@ const MISSION_12 = {
       bubble:'Arrays em C# têm tamanho <strong>fixo</strong> definido na criação. Para tamanho dinâmico, use List<T>.',
       q:'Qual a limitação principal de um array em C#?',
       hint:'Criou com tamanho 10, fica com 10 para sempre',
-      opts:[
+      opts: [
         {t:'Só aceita strings', ok:false},
         {t:'Não pode ser iterado com foreach', ok:false},
         {t:'Tamanho fixo — não pode crescer ou diminuir após a criação', ok:true},
@@ -65,9 +65,9 @@ const MISSION_12 = {
       bubble:'O método <code>Array.Sort()</code> ordena um array em ordem crescente no lugar (in-place), sem criar novo array.',
       q:'Array.Sort(arr) modifica o array original ou cria um novo?',
       hint:'In-place',
-      opts:[
-        {t:'Cria e retorna um novo array ordenado', ok:false},
+      opts: [
         {t:'Modifica o array original in-place', ok:true},
+        {t:'Cria e retorna um novo array ordenado', ok:false},
         {t:'Retorna uma List ordenada', ok:false},
         {t:'Não funciona para arrays de inteiros', ok:false},
       ],
@@ -125,10 +125,10 @@ const MISSION_12 = {
       code:`<span class="kw">int</span>[] hp = {<span class="nm">100</span>, <span class="nm">80</span>, <span class="nm">60</span>};\nhp[<span class="nm">1</span>] = <span class="nm">50</span>;\nConsole.<span class="mt">WriteLine</span>(<span class="st">$"{hp[0]} {hp[1]} {hp[2]}"</span>);`,
       q:'O que será exibido?',
       hint:'hp[1] foi modificado para 50',
-      opts:[
-        {t:'100 80 60', ok:false},
+      opts: [
         {t:'100 50 60', ok:true},
         {t:'50 80 60', ok:false},
+        {t:'100 80 60', ok:false},
         {t:'100 80 50', ok:false},
       ],
       exp:'"hp[1] = 50" modifica o segundo elemento (índice 1). O array vira {100, 50, 60}.',
@@ -141,10 +141,10 @@ const MISSION_12 = {
       code:`<span class="kw">int</span>[] danos = {<span class="nm">45</span>, <span class="nm">10</span>, <span class="nm">80</span>, <span class="nm">25</span>};\nArray.<span class="mt">Sort</span>(danos);\n<span class="kw">foreach</span> (<span class="kw">int</span> d <span class="kw">in</span> danos)\n    Console.<span class="mt">Write</span>(d + <span class="st">" "</span>);`,
       q:'O que será exibido?',
       hint:'Ordenado de menor para maior',
-      opts:[
-        {t:'45 10 80 25', ok:false},
-        {t:'10 25 45 80', ok:true},
+      opts: [
         {t:'80 45 25 10', ok:false},
+        {t:'10 25 45 80', ok:true},
+        {t:'45 10 80 25', ok:false},
         {t:'10 45 25 80', ok:false},
       ],
       exp:'"Array.Sort" ordena em ordem crescente. {45,10,80,25} → {10,25,45,80}.',
@@ -157,9 +157,9 @@ const MISSION_12 = {
       code:`<span class="kw">string</span>[] armas = {<span class="st">"Pistola"</span>, <span class="st">"Escopeta"</span>, <span class="st">"Rifle"</span>};\n<span class="kw">int</span> pos = Array.<span class="mt">IndexOf</span>(armas, <span class="st">"Escopeta"</span>);\nConsole.<span class="mt">WriteLine</span>(pos);`,
       q:'O que será exibido?',
       hint:'"Escopeta" está em qual posição?',
-      opts:[
-        {t:'0', ok:false},{t:'2', ok:false},
-        {t:'1', ok:true},{t:'-1', ok:false},
+      opts: [
+        {t:'2', ok:false},{t:'1', ok:true},
+        {t:'0', ok:false},{t:'-1', ok:false},
       ],
       exp:'"Escopeta" está no índice 1. Array.IndexOf retorna o índice do elemento ou -1 se não encontrar.',
     },
@@ -171,9 +171,9 @@ const MISSION_12 = {
       code:`<span class="kw">bool</span>[] missoes = {<span class="kw">true</span>, <span class="kw">true</span>, <span class="kw">false</span>, <span class="kw">true</span>, <span class="kw">false</span>};\n<span class="kw">int</span> completas = <span class="nm">0</span>;\n<span class="kw">foreach</span> (<span class="kw">bool</span> m <span class="kw">in</span> missoes)\n    <span class="kw">if</span> (m) completas++;\nConsole.<span class="mt">WriteLine</span>(completas);`,
       q:'Quantas missões foram completadas?',
       hint:'Conte os "true" no array',
-      opts:[
-        {t:'2', ok:false},{t:'5', ok:false},
-        {t:'3', ok:true},{t:'1', ok:false},
+      opts: [
+        {t:'3', ok:true},{t:'2', ok:false},
+        {t:'5', ok:false},{t:'1', ok:false},
       ],
       exp:'{true, true, false, true, false}: 3 valores true. completas = 3.',
     },

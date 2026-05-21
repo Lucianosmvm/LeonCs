@@ -22,9 +22,9 @@ const MISSION_13 = {
       bubble:'Um <strong>array 2D</strong> em C# é uma tabela de linhas e colunas: <code>int[,] grade = new int[3,4]</code> cria 3 linhas × 4 colunas.',
       q:'Quantos elementos tem um array int[3,4]?',
       hint:'Linhas × colunas',
-      opts:[
-        {t:'7', ok:false},{t:'34', ok:false},
-        {t:'12', ok:true},{t:'3', ok:false},
+      opts: [
+        {t:'12', ok:true},{t:'7', ok:false},
+        {t:'3', ok:false},{t:'34', ok:false},
       ],
       exp:'3 linhas × 4 colunas = 12 elementos. Acessados por grade[linha, coluna] — de grade[0,0] até grade[2,3].',
     },
@@ -50,11 +50,11 @@ const MISSION_13 = {
       bubble:'Para obter o número de linhas e colunas de um array 2D, usamos <code>GetLength(dimensão)</code>.',
       q:'Como obter o número de colunas de um array 2D?',
       hint:'A segunda dimensão é o índice 1',
-      opts:[
-        {t:'arr.Length', ok:false},
-        {t:'arr.GetLength(0)', ok:false},
+      opts: [
         {t:'arr.GetLength(1)', ok:true},
+        {t:'arr.Length', ok:false},
         {t:'arr.Columns', ok:false},
+        {t:'arr.GetLength(0)', ok:false},
       ],
       exp:'"GetLength(0)" = número de linhas. "GetLength(1)" = número de colunas. "arr.Length" retorna o total de elementos.',
     },
@@ -65,11 +65,11 @@ const MISSION_13 = {
       bubble:'Arrays 2D são usados para representar: mapas de jogo, matrizes matemáticas, grades, tabelas de dados.',
       q:'Qual estrutura se representa naturalmente com array 2D?',
       hint:'Grade com linhas e colunas',
-      opts:[
-        {t:'Uma lista de nomes', ok:false},
-        {t:'Um mapa de jogo em grade (como Minecraft top-down)', ok:true},
-        {t:'Uma sequência de eventos', ok:false},
+      opts: [
         {t:'Um dicionário de sinônimos', ok:false},
+        {t:'Uma lista de nomes', ok:false},
+        {t:'Uma sequência de eventos', ok:false},
+        {t:'Um mapa de jogo em grade (como Minecraft top-down)', ok:true},
       ],
       exp:'Mapas em grade, matrizes, pixels de imagem, planilhas — qualquer estrutura de linhas × colunas é um array 2D natural.',
     },
@@ -114,9 +114,9 @@ const MISSION_13 = {
       code:`<span class="kw">int</span>[,] mapa = {\n    {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>},\n    {<span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>}\n};\nConsole.<span class="mt">WriteLine</span>(mapa[<span class="nm">1</span>, <span class="nm">2</span>]);`,
       q:'O que será exibido?',
       hint:'Linha 1, coluna 2',
-      opts:[
-        {t:'3', ok:false},{t:'5', ok:false},
-        {t:'6', ok:true},{t:'2', ok:false},
+      opts: [
+        {t:'3', ok:false},{t:'2', ok:false},
+        {t:'6', ok:true},{t:'5', ok:false},
       ],
       exp:'mapa[1,2]: linha 1 (segunda linha) = {4,5,6}. Coluna 2 (terceira) = 6.',
     },
@@ -128,9 +128,9 @@ const MISSION_13 = {
       code:`<span class="kw">int</span>[,] grid = {{<span class="nm">1</span>,<span class="nm">2</span>},{<span class="nm">3</span>,<span class="nm">4</span>},{<span class="nm">5</span>,<span class="nm">6</span>}};\n<span class="kw">int</span> soma = <span class="nm">0</span>;\n<span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i<grid.<span class="mt">GetLength</span>(<span class="nm">0</span>);i++)\n  <span class="kw">for</span>(<span class="kw">int</span> j=<span class="nm">0</span>;j<grid.<span class="mt">GetLength</span>(<span class="nm">1</span>);j++)\n    soma += grid[i,j];\nConsole.<span class="mt">WriteLine</span>(soma);`,
       q:'Qual a soma de todos os elementos?',
       hint:'1+2+3+4+5+6',
-      opts:[
-        {t:'15', ok:false},{t:'6', ok:false},
-        {t:'21', ok:true},{t:'12', ok:false},
+      opts: [
+        {t:'12', ok:false},{t:'15', ok:false},
+        {t:'21', ok:true},{t:'6', ok:false},
       ],
       exp:'1+2+3+4+5+6 = 21. O for duplo percorre todas as 3 linhas × 2 colunas = 6 elementos.',
     },
@@ -142,9 +142,9 @@ const MISSION_13 = {
       code:`<span class="kw">int</span>[][] jagged = {\n    <span class="kw">new int</span>[] {<span class="nm">1</span>, <span class="nm">2</span>},\n    <span class="kw">new int</span>[] {<span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>}\n};\nConsole.<span class="mt">WriteLine</span>(jagged[<span class="nm">1</span>][<span class="nm">2</span>]);`,
       q:'O que será exibido?',
       hint:'Linha 1, elemento 2 (terceiro)',
-      opts:[
-        {t:'4', ok:false},{t:'2', ok:false},
-        {t:'5', ok:true},{t:'3', ok:false},
+      opts: [
+        {t:'3', ok:false},{t:'4', ok:false},
+        {t:'5', ok:true},{t:'2', ok:false},
       ],
       exp:'"jagged[1]" = {3,4,5}. "[2]" = terceiro elemento = 5. Jagged usa dois colchetes separados: [linha][coluna].',
     },

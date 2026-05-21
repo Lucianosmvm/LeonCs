@@ -13,10 +13,10 @@ const MISSION_20 = {
       bubble:'As <strong>coleções</strong> do namespace <code>System.Collections.Generic</code> são estruturas de dados prontas: List, Dictionary, Stack, Queue e muito mais.',
       q:'Qual namespace precisa ser importado para usar List<T> e Dictionary<K,V>?',
       hint:'Generic Collections',
-      opts:[
+      opts: [
         {t:'System.Arrays', ok:false},
-        {t:'System.Collections.Generic', ok:true},
         {t:'System.Data', ok:false},
+        {t:'System.Collections.Generic', ok:true},
         {t:'System.Linq', ok:false},
       ],
       exp:'"using System.Collections.Generic" habilita List<T>, Dictionary<K,V>, Stack<T>, Queue<T> e outras. Em projetos .NET 6+, está incluído por padrão.',
@@ -28,10 +28,10 @@ const MISSION_20 = {
       bubble:'A principal diferença entre <strong>Array</strong> e <strong>List&lt;T&gt;</strong> é que List cresce e encolhe dinamicamente.',
       q:'Qual a vantagem da List<T> sobre um array simples?',
       hint:'Pense em flexibilidade de tamanho',
-      opts:[
+      opts: [
         {t:'List é sempre mais rápida que array', ok:false},
-        {t:'List tem tamanho dinâmico — cresce e encolhe conforme necessário', ok:true},
         {t:'List aceita tipos mistos (int e string juntos)', ok:false},
+        {t:'List tem tamanho dinâmico — cresce e encolhe conforme necessário', ok:true},
         {t:'List não precisa de tipo definido', ok:false},
       ],
       exp:'Array: tamanho fixo, definido na criação. List<T>: dinâmica, Add() adiciona e Remove() retira elementos. Mais flexível, ligeiramente mais lenta.',
@@ -43,10 +43,10 @@ const MISSION_20 = {
       bubble:'Um <strong>Dictionary&lt;TKey, TValue&gt;</strong> armazena pares chave-valor, onde cada chave é única e o acesso é O(1) via hashing.',
       q:'O que acontece ao inserir uma chave já existente num Dictionary?',
       hint:'Chaves são únicas',
-      opts:[
+      opts: [
+        {t:'Silenciosamente ignora a inserção', ok:false},
         {t:'Cria uma segunda entrada com a mesma chave', ok:false},
         {t:'Lança ArgumentException — chave duplicada não é permitida', ok:true},
-        {t:'Silenciosamente ignora a inserção', ok:false},
         {t:'Converte a chave em uma lista', ok:false},
       ],
       exp:'Dictionary não permite chaves duplicadas. Use dic[chave] = valor para atualizar, ou ContainsKey() para verificar antes de adicionar.',
@@ -58,10 +58,10 @@ const MISSION_20 = {
       bubble:'Uma <strong>Stack&lt;T&gt;</strong> segue o princípio LIFO (Last In, First Out) — como uma pilha de pratos.',
       q:'Qual método remove e retorna o elemento do topo de uma Stack?',
       hint:'Tirar do topo',
-      opts:[
+      opts: [
+        {t:'Pop()', ok:true},
         {t:'Dequeue()', ok:false},
         {t:'RemoveFirst()', ok:false},
-        {t:'Pop()', ok:true},
         {t:'Pull()', ok:false},
       ],
       exp:'"Pop()" remove e retorna o topo da Stack (LIFO). "Push(item)" adiciona ao topo. "Peek()" visualiza sem remover.',
@@ -73,7 +73,7 @@ const MISSION_20 = {
       bubble:'Uma <strong>Queue&lt;T&gt;</strong> segue o princípio FIFO (First In, First Out) — como uma fila de banco.',
       q:'Qual método adiciona um elemento ao final de uma Queue?',
       hint:'Entrar na fila',
-      opts:[
+      opts: [
         {t:'Push()', ok:false},
         {t:'Add()', ok:false},
         {t:'Enqueue()', ok:true},
@@ -122,9 +122,9 @@ const MISSION_20 = {
       code:`<span class="kw">var</span> inv = <span class="kw">new</span> List&lt;<span class="kw">string</span>&gt; { <span class="st">"Pistola"</span>, <span class="st">"Faca"</span>, <span class="st">"Erva"</span> };\ninv.<span class="mt">Add</span>(<span class="st">"Escopeta"</span>);\ninv.<span class="mt">Remove</span>(<span class="st">"Faca"</span>);\nConsole.<span class="mt">WriteLine</span>(inv.<span class="mt">Count</span>);\nConsole.<span class="mt">WriteLine</span>(inv[<span class="nm">1</span>]);`,
       q:'O que será exibido?',
       hint:'Adiciona 1, remove 1. Quem fica no índice 1?',
-      opts:[
-        {t:'4 e Faca', ok:false},
+      opts: [
         {t:'3 e Erva', ok:true},
+        {t:'4 e Faca', ok:false},
         {t:'3 e Pistola', ok:false},
         {t:'4 e Erva', ok:false},
       ],
@@ -138,8 +138,8 @@ const MISSION_20 = {
       code:`<span class="kw">var</span> danos = <span class="kw">new</span> Dictionary&lt;<span class="kw">string</span>,<span class="kw">int</span>&gt;\n{\n    [<span class="st">"Pistola"</span>]  = <span class="nm">25</span>,\n    [<span class="st">"Escopeta"</span>] = <span class="nm">80</span>,\n    [<span class="st">"Rifle"</span>]    = <span class="nm">120</span>\n};\n<span class="kw">foreach</span>(<span class="kw">var</span> par <span class="kw">in</span> danos)\n    Console.<span class="mt">WriteLine</span>(<span class="st">$"{par.Key}: {par.Value}"</span>);`,
       q:'Quantas linhas serão exibidas?',
       hint:'Um par, uma linha',
-      opts:[
-        {t:'1', ok:false},{t:'2', ok:false},
+      opts: [
+        {t:'2', ok:false},{t:'1', ok:false},
         {t:'3', ok:true},{t:'6', ok:false},
       ],
       exp:'O Dictionary tem 3 pares. foreach itera cada KeyValuePair. 3 linhas: "Pistola: 25", "Escopeta: 80", "Rifle: 120".',
@@ -152,7 +152,7 @@ const MISSION_20 = {
       code:`<span class="kw">var</span> historico = <span class="kw">new</span> Stack&lt;<span class="kw">string</span>&gt;();\nhistorico.<span class="mt">Push</span>(<span class="st">"Mover"</span>);\nhistorico.<span class="mt">Push</span>(<span class="st">"Atacar"</span>);\nhistorico.<span class="mt">Push</span>(<span class="st">"Recarregar"</span>);\nConsole.<span class="mt">WriteLine</span>(historico.<span class="mt">Pop</span>());\nConsole.<span class="mt">WriteLine</span>(historico.<span class="mt">Peek</span>());`,
       q:'O que será exibido?',
       hint:'LIFO: último a entrar é o primeiro a sair',
-      opts:[
+      opts: [
         {t:'Mover e Atacar', ok:false},
         {t:'Recarregar e Atacar', ok:true},
         {t:'Recarregar e Recarregar', ok:false},
