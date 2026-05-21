@@ -127,9 +127,7 @@ async function doLogout() {
   window._currentUser = null;
   S = defState();
   _saveLocal();
-  document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
-  document.getElementById('ob').classList.add('on');
-  document.body.classList.add('desk-auth');
+  go('ob');
   showToast('Até mais, agente!', 'info');
 }
 
