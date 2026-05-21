@@ -424,7 +424,7 @@ pre.code-pre .mt{color:#80cbc4}
 ═══════════════════════════════════════════════════ */
 #desk-nav,#desk-aside{display:none}
 
-@media(min-width:900px){
+@media(min-width:900px) and (hover:hover) and (pointer:fine){
   #mob-nav{display:none}
   .scr{padding-bottom:0}
 

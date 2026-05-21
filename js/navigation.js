@@ -53,7 +53,7 @@ function go(id) {
   // Oculta mob-nav em telas de auth
   const authScreens2 = ['sp', 'ob', 'au'];
   const mobNav = document.getElementById('mob-nav');
-  if (mobNav) mobNav.style.display = authScreens2.includes(id) ? 'none' : 'flex';
+  if (mobNav) mobNav.style.display = authScreens2.includes(id) ? 'none' : '';
   refreshDeskSidebar();
 }
 
