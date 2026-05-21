@@ -4,8 +4,8 @@
 // ═══════════════════════════════════════════════════════
 
 let _currentSubjectId = 'csharp';
-let _teacherMissionsCache = {};
-let _dynamicSubjects = []; // matérias criadas pelo professor no Firestore
+let _subjectMissionsCache = {};
+let _dynamicSubjects = [];
 
 async function refreshSubjectSelect() {
   const grid = document.getElementById('sb-grid');
@@ -22,9 +22,8 @@ async function refreshSubjectSelect() {
 
   grid.innerHTML = '<div class="tc-loading">// CARREGANDO MATÉRIAS...</div>';
 
-  // Sempre busca frescos — invalida cache de missões também
-  _teacherMissionsCache = {};
-  _dynamicSubjects = await loadDynamicSubjects();
+  _subjectMissionsCache = {};
+  _dynamicSubjects = SUBJECTS.filter(s => s.id !== 'csharp');
 
   const done = S.subjectDone || {};
 
@@ -38,13 +37,12 @@ async function refreshSubjectSelect() {
       <div class="sb-card-count">${csharpDone} missões completas</div>
     </div>`;
 
-  // Matérias dinâmicas do Firestore
   _dynamicSubjects.forEach(s => {
     const count = done[s.id]?.length || 0;
     html += `
     <div class="sb-card" style="--subj-color:${s.color || '#c8a96e'}" onclick="openSubject('${s.id}')">
       <div class="sb-card-ico">${s.icon || '📚'}</div>
-      <div class="sb-card-label">${s.name}</div>
+      <div class="sb-card-label">${s.label}</div>
       <div class="sb-card-desc">${s.desc || ''}</div>
       <div class="sb-card-count">${count} missões completas</div>
     </div>`;
@@ -60,9 +58,9 @@ async function openSubject(subjectId) {
 
   let label = 'C#', icon = '🎮';
   if (subjectId !== 'csharp') {
-    const subj = _dynamicSubjects.find(s => s.id === subjectId);
-    label = subj?.name || subjectId;
-    icon  = subj?.icon || '📚';
+    const subj = SUBJECTS.find(s => s.id === subjectId);
+    label = subj?.label || subjectId;
+    icon  = subj?.icon  || '📚';
   }
   document.getElementById('mp-subj-label').textContent = label;
   document.getElementById('mp-subj-icon').textContent  = icon;
@@ -88,13 +86,14 @@ async function refreshSubjectMap() {
   if (_currentSubjectId === 'csharp') {
     allMissions = MISSIONS.map(m => ({ ...m, _source: 'local' }));
   } else {
-    if (!_teacherMissionsCache[_currentSubjectId]) {
-      _teacherMissionsCache[_currentSubjectId] = await loadTeacherMissions(_currentSubjectId);
+    if (!_subjectMissionsCache[_currentSubjectId]) {
+      const loader = window['MISSIONS_' + _currentSubjectId.toUpperCase()];
+      _subjectMissionsCache[_currentSubjectId] = loader || [];
     }
-    allMissions = _teacherMissionsCache[_currentSubjectId].map((m, i) => ({
+    allMissions = _subjectMissionsCache[_currentSubjectId].map((m, i) => ({
       ...m,
-      id: m._firestoreId || i,
-      _source: 'firestore',
+      id: m.id ?? i,
+      _source: 'local',
     }));
   }
 
@@ -167,18 +166,6 @@ function markSubjectMissionDone(missionId) {
     S.subjectDone[_currentSubjectId].push(missionId);
   }
   saveS();
-  delete _teacherMissionsCache[_currentSubjectId];
+  delete _subjectMissionsCache[_currentSubjectId];
 }
 
-function saveMissionResult(subjectId, missionId, correct, wrong) {
-  if (!_fbDb || !window._fb || !window._currentUser) return;
-  const uid = window._currentUser.uid;
-  const acc = (correct + wrong) > 0 ? Math.round((correct / (correct + wrong)) * 100) : 100;
-  const key = `${uid}_${subjectId}_${missionId}`;
-  window._fb.setDoc(window._fb.doc(_fbDb, 'missionResults', key), {
-    uid, subjectId, missionId: String(missionId),
-    correct, wrong, accuracy: acc,
-    completedAt: window._fb.serverTimestamp(),
-    studentName: window._currentUser.displayName || 'Aluno',
-  }).catch(() => {});
-}

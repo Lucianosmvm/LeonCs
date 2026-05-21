@@ -231,8 +231,7 @@ function nextStep() {
     } else {
       const mid = m._resolvedId || m._firestoreId || m.id;
       markSubjectMissionDone(mid);
-      saveMissionResult(subjectId, mid, SEL.correct, SEL.wrong);
-      S.xp += 50; SEL.xpGained += 50;
+S.xp += 50; SEL.xpGained += 50;
     }
     saveS();
     checkAchievements();

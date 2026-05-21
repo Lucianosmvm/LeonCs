@@ -75,15 +75,6 @@
         <input id="reg-pass" type="password" placeholder="••••••••">
         <div class="form-err" id="reg-pass-err"></div>
       </div>
-      <div class="form-group">
-        <div class="form-label">CÓDIGO DA TURMA <span style="color:var(--t3);font-size:.7em">(opcional)</span></div>
-        <input id="reg-classroom-code" type="text" placeholder="Ex: ABC123 — recebido do professor" autocomplete="off" maxlength="8" style="text-transform:uppercase">
-        <div class="form-err" id="reg-classroom-err"></div>
-      </div>
-      <div class="form-group">
-        <div class="form-label">CÓDIGO DE PROFESSOR <span style="color:var(--t3);font-size:.7em">(opcional)</span></div>
-        <input id="reg-teacher-code" type="text" placeholder="Deixe em branco para conta de aluno" autocomplete="off">
-      </div>
       <button class="btn btn-gold" onclick="doRegister()">CRIAR CONTA</button>
       <div class="au-terms">Ao criar conta você concorda com os <span>Termos de Uso</span> e <span>Política de Privacidade</span></div>
     </div>
@@ -357,158 +348,6 @@
   </div>
 </div>
 
-<!-- ══════════════ PAINEL DO PROFESSOR ══════════════ -->
-<div id="tc" class="scr">
-  <div class="tc-topbar">
-    <div class="hm-user-info">
-      <div class="hm-av-wrap" id="tc-av">P</div>
-      <div>
-        <div class="hm-uname" id="tc-name">Professor</div>
-        <div class="hm-uplan gold">// PAINEL DO PROFESSOR</div>
-      </div>
-    </div>
-    <div class="hm-topbar-btns">
-      <div class="icon-btn" onclick="go('tc-stats')" title="Alunos">👥</div>
-      <div class="icon-btn" onclick="doLogout()" title="Sair">🚪</div>
-    </div>
-  </div>
-  <div class="tc-tabs-bar">
-    <div class="tc-tabs-label">// MATÉRIA</div>
-    <div class="tc-subj-scroll" id="tc-subj-tabs"></div>
-  </div>
-  <div class="tc-actions">
-    <button class="btn btn-ghost" onclick="tcNewSubject()">+ NOVA MATÉRIA</button>
-    <button class="btn btn-gold" onclick="tcNewMission()">+ NOVA ATIVIDADE</button>
-  </div>
-  <div class="tc-mission-list scrollable" id="tc-mission-list">
-    <div class="tc-loading">// CARREGANDO...</div>
-  </div>
-</div>
-
-<!-- ══════════════ EDITOR DE ATIVIDADE ══════════════ -->
-<div id="tc-edit" class="scr">
-  <div class="au-hdr">
-    <button class="btn-back2" onclick="go('tc')">←</button>
-    <span style="font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:1.1rem">✏️ EDITOR DE ATIVIDADE</span>
-  </div>
-  <div class="tce-body scrollable">
-    <div class="tc-section-label">// INFORMAÇÕES GERAIS</div>
-    <div class="form-group"><div class="form-label">TÍTULO</div><input class="tce-inp" id="tce-title" placeholder="Ex: Introdução ao Python"></div>
-    <div class="form-group"><div class="form-label">ÍCONE (emoji)</div><input class="tce-inp" id="tce-icon" placeholder="📝" maxlength="4"></div>
-    <div class="form-group"><div class="form-label">DESCRIÇÃO</div><textarea class="tce-inp tce-ta" id="tce-desc" placeholder="Descreva o que o aluno vai aprender..."></textarea></div>
-    <div class="tce-row">
-      <div class="form-group" style="flex:1"><div class="form-label">ORDEM</div><input class="tce-inp" id="tce-order" type="number" min="0" placeholder="0"></div>
-      <div class="form-group" style="display:flex;align-items:center;gap:8px;padding-top:22px">
-        <input type="checkbox" id="tce-free" checked>
-        <label for="tce-free" style="font-size:.78rem;color:var(--t2)">Gratuita</label>
-      </div>
-    </div>
-    <div class="tc-section-label">// OBJETIVOS</div>
-    <div id="tce-objs"></div>
-    <button class="tc-btn-add" onclick="tcAddObj()">+ Adicionar objetivo</button>
-    <div class="tc-section-label">// EXERCÍCIOS</div>
-    <div id="tce-steps"></div>
-    <button class="tc-btn-add" onclick="tcAddStep()">+ Adicionar exercício</button>
-    <div style="height:20px"></div>
-    <button class="btn btn-gold" onclick="tcSaveMission()">💾 SALVAR ATIVIDADE</button>
-    <div style="height:30px"></div>
-  </div>
-</div>
-
-<!-- ══════════════ ALUNOS (PROFESSOR) ══════════════ -->
-<div id="tc-stats" class="scr">
-  <div class="mp-hdr">
-    <button class="btn-back" onclick="go('tc')">←</button>
-    <span style="font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:1.1rem">👥 ALUNOS</span>
-    <span id="tc-students-count" style="font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--t3)"></span>
-  </div>
-  <div id="tc-classroom-box" style="display:none;background:var(--card);margin:12px 16px;border-radius:10px;padding:14px 16px">
-    <div style="font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--t3);margin-bottom:6px">// CÓDIGO DA TURMA · COMPARTILHE COM SEUS ALUNOS</div>
-    <div style="display:flex;align-items:center;gap:12px">
-      <div id="tc-classroom-code" style="font-family:'Bebas Neue',cursive;font-size:2.2rem;letter-spacing:6px;color:var(--gold)"></div>
-      <button class="btn btn-ghost" style="padding:6px 14px;font-size:.7rem" onclick="copyClassroomCode()">📋 COPIAR</button>
-    </div>
-  </div>
-  <div id="tc-no-classroom" style="display:none;padding:40px 16px;text-align:center">
-    <div style="color:var(--t3);font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-bottom:16px">// NENHUMA TURMA CRIADA</div>
-    <p style="color:var(--t2);font-size:.85rem;margin-bottom:20px">Crie uma turma para obter um código único.<br>Compartilhe com seus alunos no cadastro.</p>
-    <button class="btn btn-gold" onclick="tcCreateClassroom()">🏫 CRIAR TURMA</button>
-  </div>
-  <div class="rk-sub">// PROGRESSO DOS ALUNOS · ORDENADO POR XP</div>
-  <div id="tc-students-list" class="rk-list scrollable"></div>
-</div>
-
-<!-- ══════════════ MODAL NOVA MATÉRIA (PROFESSOR) ══════════════ -->
-<div class="modal" id="modal-subject">
-  <div class="mbox">
-    <h2>📚 NOVA MATÉRIA</h2>
-    <input type="hidden" id="ms-id">
-    <div class="form-group">
-      <div class="form-label">NOME *</div>
-      <input class="tce-inp" id="ms-name" placeholder="Ex: Python, HTML, Java...">
-    </div>
-    <div class="form-group">
-      <div class="form-label">ÍCONE (emoji)</div>
-      <input class="tce-inp" id="ms-icon" placeholder="📚" style="font-size:1.4rem;text-align:center;width:80px">
-    </div>
-    <div class="form-group">
-      <div class="form-label">COR</div>
-      <input type="color" id="ms-color" value="#3498db" style="height:40px;width:60px;border:none;background:none;cursor:pointer">
-    </div>
-    <div class="form-group">
-      <div class="form-label">DESCRIÇÃO</div>
-      <textarea class="tce-inp tce-ta" id="ms-desc" placeholder="Breve descrição da matéria..."></textarea>
-    </div>
-    <div class="mbox-btns">
-      <button class="btn btn-gold" onclick="tcSaveSubject()">✅ SALVAR MATÉRIA</button>
-      <button class="btn btn-ghost" onclick="tcCloseSubjectModal()">CANCELAR</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════ MODAL DE EXERCÍCIO (PROFESSOR) ══════════════ -->
-<div class="modal" id="modal-step">
-  <div class="mbox mbox-lg">
-    <h2>✏️ EXERCÍCIO</h2>
-    <div class="form-group">
-      <div class="form-label">TIPO</div>
-      <select class="tce-inp" id="sm-type" onchange="_smTypeChange()">
-        <option value="mc">Múltipla Escolha</option>
-        <option value="fill">Complete o Código</option>
-        <option value="code">Leia o Código</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <div class="form-label">TEXTO DA BOLHA (opcional)</div>
-      <textarea class="tce-inp tce-ta" id="sm-bubble" placeholder="Contexto/explicação antes da pergunta..."></textarea>
-    </div>
-    <div class="form-group">
-      <div class="form-label">CÓDIGO (opcional — HTML permitido com spans)</div>
-      <textarea class="tce-inp tce-ta" id="sm-code" placeholder='Ex: <span class="kw">int</span> x = 5;'></textarea>
-    </div>
-    <div class="form-group">
-      <div class="form-label">PERGUNTA *</div>
-      <input class="tce-inp" id="sm-q" placeholder="Qual é o resultado de...">
-    </div>
-    <div class="form-group" id="sm-fill-row" style="display:none">
-      <div class="form-label">RESPOSTA CORRETA</div>
-      <input class="tce-inp" id="sm-ans" placeholder="Palavra ou valor exato">
-    </div>
-    <div id="sm-opts-area">
-      <div class="form-label">OPÇÕES (marque a correta)</div>
-      <div id="sm-opts"></div>
-    </div>
-    <div class="form-group">
-      <div class="form-label">EXPLICAÇÃO (após responder)</div>
-      <textarea class="tce-inp tce-ta" id="sm-exp" placeholder="Por que esta é a resposta correta..."></textarea>
-    </div>
-    <div class="mbox-btns">
-      <button class="btn btn-gold" onclick="tcSaveStep()">✅ SALVAR EXERCÍCIO</button>
-      <button class="btn btn-ghost" onclick="tcCloseStepModal()">CANCELAR</button>
-    </div>
-  </div>
-</div>
-
 <!-- ══════════════ MODAL INSTALAR iOS ══════════════ -->
 <div class="modal" id="modal-ios-install">
   <div class="mbox">
@@ -553,7 +392,6 @@
     <button class="dn-link" id="dn-rk" onclick="go('rk')"><span class="dn-ico">🏆</span><span>RANKING</span></button>
     <button class="dn-link" id="dn-pr" onclick="go('pr')"><span class="dn-ico">👤</span><span>PERFIL</span></button>
     <button class="dn-link" id="dn-pw" onclick="go('pw')"><span class="dn-ico">👑</span><span>PREMIUM</span></button>
-    <button class="dn-link" id="dn-tc" onclick="go('tc')" style="display:none"><span class="dn-ico">🎓</span><span>PROFESSOR</span></button>
   </div>
   <button class="dn-link dn-logout" onclick="doLogout()"><span class="dn-ico">🚪</span><span>SAIR</span></button>
 </nav>
@@ -698,7 +536,6 @@
 <script src="js/navigation.js"></script>
 <script src="js/game.js"></script>
 <script src="js/subjects.js"></script>
-<script src="js/teacher.js"></script>
 <script src="js/app.js"></script>
 
 </body>

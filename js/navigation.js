@@ -5,7 +5,6 @@
 
 function go(id) {
   if (id === 'pw' && S.premium) { showToast('Você já é Premium! 👑', 'ok'); id = 'hm'; }
-  if (S.role === 'teacher' && ['hm', 'sb'].includes(id)) { id = 'tc'; }
   document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
   const el = document.getElementById(id);
   if (!el) { console.warn('Tela não encontrada:', id); return; }
@@ -16,26 +15,20 @@ function go(id) {
   if (id === 'pr') refreshProfile();
   if (id === 'rk') refreshRank();
   if (id === 'ac') renderAchievements();
-  if (id === 'tc') refreshTeacher();
-  if (id === 'tc-stats') refreshTcStats();
   // Desktop: telas de auth ficam fullscreen, as demais mostram sidebars
   const authScreens = ['sp', 'ob', 'au'];
-  const teacherOnlyScreens = ['tc', 'tc-edit', 'tc-stats'];
   document.body.classList.toggle('desk-auth', authScreens.includes(id));
-  document.body.classList.toggle('desk-teacher', teacherOnlyScreens.includes(id));
   // Destaca link ativo na nav desktop
-  const navMap = { hm: 'dn-hm', sb: 'dn-sb', mp: 'dn-mp', pr: 'dn-pr', pw: 'dn-pw', rk: 'dn-rk', tc: 'dn-tc' };
+  const navMap = { hm: 'dn-hm', sb: 'dn-sb', mp: 'dn-mp', pr: 'dn-pr', pw: 'dn-pw', rk: 'dn-rk' };
   document.querySelectorAll('.dn-link').forEach(l => l.classList.remove('active'));
   const activeLink = document.getElementById(navMap[id]);
   if (activeLink) activeLink.classList.add('active');
-  if (!teacherOnlyScreens.includes(id)) refreshDeskSidebar();
+  refreshDeskSidebar();
 }
 
 // ── Sidebar desktop direita ──
 
 function refreshDeskSidebar() {
-  const tcLink = document.getElementById('dn-tc');
-  if (tcLink) tcLink.style.display = S.role === 'teacher' ? 'flex' : 'none';
   const _u = window._currentUser;
   if (_u) {
     const ini = (_u.displayName || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);

@@ -46,7 +46,7 @@ async function loadFirebase() {
         regenH(); checkStreakLoss(); _saveLocal();
         await checkPaymentReturn();
         if (gen !== _authGen || window._loggingOut) return;
-        if (S.role === 'teacher') { go('tc'); } else { go('sb'); }
+        go('sb');
       } else {
         ++_authGen;
         window._loggingOut = false;
@@ -56,7 +56,6 @@ async function loadFirebase() {
         document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
         document.getElementById('ob').classList.add('on');
         document.body.classList.add('desk-auth');
-        document.body.classList.remove('desk-teacher');
       }
     });
 
@@ -70,7 +69,7 @@ async function loadFirebase() {
   }
 }
 
-async function _ensureUserDoc(user, role, classroomId) {
+async function _ensureUserDoc(user) {
   if (!_fbDb || !window._fb) return;
   const ref  = window._fb.doc(_fbDb, 'users', user.uid);
   const snap = await window._fb.getDoc(ref);
@@ -79,8 +78,7 @@ async function _ensureUserDoc(user, role, classroomId) {
       name: user.displayName || 'Agente', email: user.email,
       xp: 0, hearts: MAX_H, streak: 0, lastPlayed: null,
       done: [], correct: 0, premium: false, achievements: {},
-      role: role || 'student', subjectDone: {},
-      classroomId: classroomId || null,
+      subjectDone: {},
       createdAt: window._fb.serverTimestamp(),
       lastLogin:  window._fb.serverTimestamp(),
     });
@@ -104,7 +102,6 @@ async function _loadCloud(uid) {
       S.premium       = d.premium       ?? false;
       S.achievements  = d.achievements  ?? {};
       S.createdAt     = d.createdAt?.toDate?.()?.toLocaleDateString('pt-BR') ?? '—';
-      S.role          = d.role          ?? 'student';
       S.subjectDone   = d.subjectDone   ?? {};
     }
   } catch(e) { console.warn('Offline — usando dados locais'); }
@@ -142,139 +139,3 @@ async function loadRanking() {
   } catch(e) { console.warn('Ranking indisponível:', e.message); return []; }
 }
 
-// ── Missões criadas pelo Professor (Firestore) ──
-
-async function loadTeacherMissions(subjectId) {
-  if (!_fbDb || !window._fb) return [];
-  try {
-    const q = window._fb.query(
-      window._fb.collection(_fbDb, 'subjects', subjectId, 'missions'),
-      window._fb.orderBy('order', 'asc')
-    );
-    const snap = await window._fb.getDocs(q);
-    return snap.docs.map(d => ({ _firestoreId: d.id, ...d.data() }));
-  } catch(e) { console.warn('Missões professor indisponível:', e.message); return []; }
-}
-
-async function saveTeacherMission(subjectId, missionData) {
-  if (!_fbDb || !window._fb) return null;
-  const uid = window._currentUser?.uid;
-  if (!uid) return null;
-  const colRef = window._fb.collection(_fbDb, 'subjects', subjectId, 'missions');
-  const subjRef = window._fb.doc(_fbDb, 'subjects', subjectId);
-  if (missionData._firestoreId) {
-    const ref = window._fb.doc(_fbDb, 'subjects', subjectId, 'missions', missionData._firestoreId);
-    const { _firestoreId, ...data } = missionData;
-    await window._fb.updateDoc(ref, { ...data, updatedAt: window._fb.serverTimestamp(), updatedBy: uid });
-    return missionData._firestoreId;
-  } else {
-    const { _firestoreId, ...data } = missionData;
-    const ref = await window._fb.addDoc(colRef, { ...data, createdAt: window._fb.serverTimestamp(), createdBy: uid });
-    await window._fb.updateDoc(subjRef, { missionCount: window._fb.increment(1) });
-    return ref.id;
-  }
-}
-
-async function deleteTeacherMission(subjectId, firestoreId) {
-  if (!_fbDb || !window._fb) return;
-  const subjRef = window._fb.doc(_fbDb, 'subjects', subjectId);
-  await window._fb.deleteDoc(window._fb.doc(_fbDb, 'subjects', subjectId, 'missions', firestoreId));
-  await window._fb.updateDoc(subjRef, { missionCount: window._fb.increment(-1) });
-}
-
-async function loadDynamicSubjects() {
-  if (!_fbDb || !window._fb) return [];
-  try {
-    const q = window._fb.query(
-      window._fb.collection(_fbDb, 'subjects'),
-      window._fb.orderBy('createdAt', 'asc')
-    );
-    const snap = await window._fb.getDocs(q);
-    return snap.docs
-      .filter(d => (d.data().missionCount || 0) > 0)
-      .map(d => ({ id: d.id, ...d.data() }));
-  } catch(e) { console.warn('Matérias indisponível:', e.message); return []; }
-}
-
-async function saveSubject(subjectData) {
-  if (!_fbDb || !window._fb) return null;
-  const uid = window._currentUser?.uid;
-  if (!uid) return null;
-  if (subjectData.id) {
-    const ref = window._fb.doc(_fbDb, 'subjects', subjectData.id);
-    const { id, ...data } = subjectData;
-    await window._fb.updateDoc(ref, { ...data, updatedAt: window._fb.serverTimestamp() });
-    return subjectData.id;
-  } else {
-    const ref = await window._fb.addDoc(window._fb.collection(_fbDb, 'subjects'), {
-      ...subjectData,
-      createdBy: uid,
-      createdAt: window._fb.serverTimestamp(),
-    });
-    return ref.id;
-  }
-}
-
-async function loadMissionResults(subjectId) {
-  if (!_fbDb || !window._fb) return [];
-  try {
-    const q = window._fb.query(
-      window._fb.collection(_fbDb, 'missionResults'),
-      window._fb.where('subjectId', '==', subjectId)
-    );
-    const snap = await window._fb.getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  } catch(e) { console.warn('Resultados indisponível:', e.message); return []; }
-}
-
-async function loadStudentList(classroomId) {
-  if (!_fbDb || !window._fb || !classroomId) return [];
-  try {
-    const q = window._fb.query(
-      window._fb.collection(_fbDb, 'users'),
-      window._fb.where('classroomId', '==', classroomId),
-      window._fb.orderBy('xp', 'desc'),
-      window._fb.limit(100)
-    );
-    const snap = await window._fb.getDocs(q);
-    return snap.docs.map(d => ({ uid: d.id, ...d.data() }));
-  } catch(e) { console.warn('Lista de alunos indisponível:', e.message); return []; }
-}
-
-async function createClassroom(teacherUid, name) {
-  if (!_fbDb || !window._fb) return null;
-  const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-  const ref = await window._fb.addDoc(window._fb.collection(_fbDb, 'classrooms'), {
-    teacherUid, name, code,
-    createdAt: window._fb.serverTimestamp(),
-  });
-  return { id: ref.id, code, name, teacherUid };
-}
-
-async function loadMyClassroom(teacherUid) {
-  if (!_fbDb || !window._fb) return null;
-  try {
-    const q = window._fb.query(
-      window._fb.collection(_fbDb, 'classrooms'),
-      window._fb.where('teacherUid', '==', teacherUid)
-    );
-    const snap = await window._fb.getDocs(q);
-    if (snap.empty) return null;
-    const d = snap.docs[0];
-    return { id: d.id, ...d.data() };
-  } catch(e) { console.warn('Classroom load error:', e.message); return null; }
-}
-
-async function findClassroomByCode(code) {
-  if (!_fbDb || !window._fb) return null;
-  try {
-    const q = window._fb.query(
-      window._fb.collection(_fbDb, 'classrooms'),
-      window._fb.where('code', '==', code.toUpperCase().trim())
-    );
-    const snap = await window._fb.getDocs(q);
-    if (snap.empty) return null;
-    const d = snap.docs[0];
-    return { id: d.id, ...d.data() };
-  } catch(e) { console.warn('Classroom find error:', e.message); return null; }
-}

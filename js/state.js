@@ -6,7 +6,7 @@
 // ── Persistência ──
 
 function defState() {
-  return { xp: 0, hearts: MAX_H, lastHeartLost: null, streak: 0, lastPlayed: null, done: [], correct: 0, premium: false, createdAt: '', achievements: {}, role: 'student', currentSubject: 'csharp', subjectDone: {} };
+  return { xp: 0, hearts: MAX_H, lastHeartLost: null, streak: 0, lastPlayed: null, done: [], correct: 0, premium: false, createdAt: '', achievements: {}, currentSubject: 'csharp', subjectDone: {} };
 }
 
 function loadS() {

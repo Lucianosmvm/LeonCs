@@ -25,7 +25,7 @@ function _fbErrMsg(code) {
 }
 
 function _clearAuthErrs() {
-  ['reg-name-err', 'reg-email-err', 'reg-pass-err', 'log-email-err', 'log-pass-err', 'reg-classroom-err']
+  ['reg-name-err', 'reg-email-err', 'reg-pass-err', 'log-email-err', 'log-pass-err']
     .forEach(id => { const el = document.getElementById(id); if (el) el.textContent = ''; });
   document.querySelectorAll('input').forEach(i => i.classList.remove('err'));
 }
@@ -35,11 +35,9 @@ function _clearAuthErrs() {
 async function doRegister() {
   if (!_fbAuth || !window._fb) { showToast('Configure o Firebase primeiro!', 'err'); return; }
   _clearAuthErrs();
-  const name       = document.getElementById('reg-name').value.trim();
-  const email      = document.getElementById('reg-email').value.trim();
-  const pass       = document.getElementById('reg-pass').value;
-  const teacherInp = document.getElementById('reg-teacher-code');
-  const teacherCode = teacherInp ? teacherInp.value.trim() : '';
+  const name  = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass  = document.getElementById('reg-pass').value;
   let valid = true;
   if (!name)         { document.getElementById('reg-name-err').textContent  = 'Nome obrigatório';    document.getElementById('reg-name').classList.add('err');  valid = false; }
   if (!email)        { document.getElementById('reg-email-err').textContent = 'E-mail obrigatório';  document.getElementById('reg-email').classList.add('err'); valid = false; }
@@ -47,41 +45,10 @@ async function doRegister() {
   if (!valid) return;
   showLoading('CRIANDO CONTA...');
   try {
-    let role = 'student';
-    if (teacherCode) {
-      const resp = await fetch(VALIDATE_TEACHER_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: teacherCode }),
-      });
-      const data = await resp.json();
-      if (!data.valid) {
-        document.getElementById('reg-name-err').textContent = 'Código de professor inválido.';
-        hideLoading();
-        return;
-      }
-      role = 'teacher';
-    }
-
-    // Valida código de turma antes de criar conta
-    let classroomId = null;
-    const classroomCodeEl = document.getElementById('reg-classroom-code');
-    const classroomCode = classroomCodeEl ? classroomCodeEl.value.trim() : '';
-    if (classroomCode) {
-      const classroom = await findClassroomByCode(classroomCode);
-      if (!classroom) {
-        document.getElementById('reg-classroom-err').textContent = 'Código de turma não encontrado.';
-        hideLoading();
-        return;
-      }
-      classroomId = classroom.id;
-    }
-
     const cred = await window._fb.createUserWithEmailAndPassword(_fbAuth, email, pass);
     await window._fb.updateProfile(cred.user, { displayName: name });
-    await _ensureUserDoc(cred.user, role, classroomId);
-    S.role = role;
-    showToast('Conta criada! Bem-vindo' + (role === 'teacher' ? ', Professor ' : ', ') + name + '!', 'ok');
+    await _ensureUserDoc(cred.user);
+    showToast('Conta criada! Bem-vindo, ' + name + '!', 'ok');
     // onAuthStateChanged dispara automaticamente
   } catch(e) {
     document.getElementById('reg-email-err').textContent = _fbErrMsg(e.code);
@@ -163,7 +130,6 @@ async function doLogout() {
   document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
   document.getElementById('ob').classList.add('on');
   document.body.classList.add('desk-auth');
-  document.body.classList.remove('desk-teacher');
   showToast('Até mais, agente!', 'info');
 }
 

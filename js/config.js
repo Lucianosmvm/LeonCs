@@ -24,9 +24,6 @@ const REGEN_MS = 20 * 60 * 1000;
 const XP_LV    = 200;
 const LV_NAMES = ['RECRUTA', 'AGENTE', 'VETERANO', 'ESPECIALISTA', 'MESTRE', 'LENDA'];
 
-// URL da Cloud Function que valida código de professor
-const VALIDATE_TEACHER_URL = 'https://us-central1-leon-cs.cloudfunctions.net/validateTeacherCode';
-
 // Matérias disponíveis
 const SUBJECTS = [
   { id: 'csharp',      label: 'C#',                    icon: '🎮', color: '#9b59b6', desc: 'Aprenda C# do zero com missões temáticas' },
