@@ -383,11 +383,51 @@ pre.code-pre .mt{color:#80cbc4}
 .btn-danger:hover{background:#e055550a}
 
 /* ═══════════════════════════════════════════════════
+   MOBILE BOTTOM NAV (< 900px)
+═══════════════════════════════════════════════════ */
+#mob-nav{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  height:62px;
+  display:flex;
+  align-items:stretch;
+  background:var(--bg);
+  border-top:1px solid var(--bd);
+  z-index:100;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.mn-link{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  background:transparent;
+  color:var(--t2);
+  border:none;
+  font-size:.55rem;
+  letter-spacing:.5px;
+  font-family:'Bebas Neue',cursive;
+  transition:color .15s;
+  padding:0 4px;
+}
+.mn-link .mn-ico{font-size:1.25rem;line-height:1}
+.mn-link.active{color:var(--gold)}
+.mn-link:active{opacity:.7}
+
+/* Push screen content above bottom nav on mobile */
+.scr{padding-bottom:62px}
+
+/* ═══════════════════════════════════════════════════
    DESKTOP — 3 colunas estilo Duolingo (min-width: 900px)
 ═══════════════════════════════════════════════════ */
 #desk-nav,#desk-aside{display:none}
 
 @media(min-width:900px){
+  #mob-nav{display:none}
+  .scr{padding-bottom:0}
+
   body{
     display:grid;
     grid-template-columns:220px 1fr 240px;

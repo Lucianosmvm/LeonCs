@@ -41,11 +41,19 @@ function go(id) {
   // Desktop: telas de auth ficam fullscreen, as demais mostram sidebars
   const authScreens = ['sp', 'ob', 'au'];
   document.body.classList.toggle('desk-auth', authScreens.includes(id));
-  // Destaca link ativo na nav desktop
+  // Destaca link ativo na nav desktop e mobile
   const navMap = { hm: 'dn-hm', sb: 'dn-sb', mp: 'dn-mp', pr: 'dn-pr', pw: 'dn-pw', rk: 'dn-rk' };
+  const mobMap = { hm: 'mn-hm', sb: 'mn-sb', mp: 'mn-mp', pr: 'mn-pr', rk: 'mn-rk' };
   document.querySelectorAll('.dn-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.mn-link').forEach(l => l.classList.remove('active'));
   const activeLink = document.getElementById(navMap[id]);
   if (activeLink) activeLink.classList.add('active');
+  const activeMob = document.getElementById(mobMap[id]);
+  if (activeMob) activeMob.classList.add('active');
+  // Oculta mob-nav em telas de auth
+  const authScreens2 = ['sp', 'ob', 'au'];
+  const mobNav = document.getElementById('mob-nav');
+  if (mobNav) mobNav.style.display = authScreens2.includes(id) ? 'none' : '';
   refreshDeskSidebar();
 }
 
