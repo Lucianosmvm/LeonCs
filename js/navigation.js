@@ -3,12 +3,35 @@
 // Depende de: config.js, state.js, auth.js, ui.js
 // ═══════════════════════════════════════════════════════
 
+// Mapa de tela → tela pai (para o botão voltar do Android)
+const BACK_MAP = {
+  hm: null,   // home não tem pai — sai do app
+  sb: 'hm',
+  mp: 'sb',
+  it: 'mp',
+  ls: 'mp',
+  rs: 'mp',
+  pr: 'hm',
+  rk: 'hm',
+  ac: 'hm',
+  pw: 'hm',
+  tc: 'hm',
+  'tc-edit': 'tc',
+  'tc-stats': 'tc',
+};
+
+let _navInProgress = false;
+
 function go(id) {
   if (id === 'pw' && S.premium) { showToast('Você já é Premium! 👑', 'ok'); id = 'hm'; }
   document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
   const el = document.getElementById(id);
   if (!el) { console.warn('Tela não encontrada:', id); return; }
   el.classList.add('on');
+  // Empurra estado no histórico para o botão voltar do Android capturar
+  if (!_navInProgress) {
+    history.pushState({ screen: id }, '', '');
+  }
   if (id === 'hm') refreshHome();
   if (id === 'sb') refreshSubjectSelect();
   if (id === 'mp') { if (!SEL.subjectId || SEL.subjectId === 'csharp') refreshMap(); else refreshSubjectMap(); }
@@ -157,3 +180,29 @@ function refreshMap() {
     list.appendChild(card);
   });
 }
+
+// ── Botão voltar Android / histórico do browser ──
+
+// Empurra um estado inicial para que o primeiro "voltar" não feche o app
+window.addEventListener('DOMContentLoaded', () => {
+  history.replaceState({ screen: 'hm' }, '', '');
+});
+
+window.addEventListener('popstate', (e) => {
+  const currentScreen = document.querySelector('.scr.on');
+  const currentId = currentScreen ? currentScreen.id : 'hm';
+  const parent = BACK_MAP[currentId];
+
+  // Sempre empurra novo estado para manter histórico navegável
+  history.pushState({ screen: parent || 'hm' }, '', '');
+
+  if (!parent) {
+    // Está na home — deixa o comportamento padrão fechar o app
+    // (o pushState acima impede o fechamento imediato; usuário precisará voltar de novo)
+    return;
+  }
+
+  _navInProgress = true;
+  go(parent);
+  _navInProgress = false;
+});
