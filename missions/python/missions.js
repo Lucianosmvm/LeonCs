@@ -1,6 +1,6 @@
 // Registro de todas as missões de Python
 // Adicione novas missões aqui na ordem correta
-const MISSIONS_PYTHON = [
+var MISSIONS_PYTHON = [
   MISSION_PYTHON_0,   // free  — Primeiros Passos
   MISSION_PYTHON_1,   // free  — Variáveis e Tipos
   MISSION_PYTHON_2,   // free  — Operadores
