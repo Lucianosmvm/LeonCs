@@ -28,9 +28,9 @@ const LV_NAMES = ['RECRUTA', 'AGENTE', 'VETERANO', 'ESPECIALISTA', 'MESTRE', 'LE
 const SUBJECTS = [
   { id: 'csharp',      label: 'C#',                    icon: '🎮', color: '#9b59b6', desc: 'Aprenda C# do zero com missões temáticas' },
   { id: 'python',      label: 'Python',                icon: '🐍', color: '#3498db', desc: 'Lógica e automação com Python' },
-  { id: 'html',        label: 'HTML / CSS',            icon: '🌐', color: '#e67e22', desc: 'Criação de páginas web' },
-  { id: 'java',        label: 'Java',                  icon: '☕', color: '#e74c3c', desc: 'Orientação a objetos com Java' },
-  { id: 'english',     label: 'Inglês Técnico',        icon: '🇺🇸', color: '#27ae60', desc: 'Vocabulário e gramática para TI' },
-  { id: 'networking',  label: 'Redes de Computadores', icon: '🔗', color: '#16a085', desc: 'Protocolos, topologias e infraestrutura' },
-  { id: 'maintenance', label: 'Manutenção de PC',      icon: '🔧', color: '#8e44ad', desc: 'Hardware, diagnóstico e reparo' },
+  // { id: 'html',        label: 'HTML / CSS',            icon: '🌐', color: '#e67e22', desc: 'Criação de páginas web' },
+  // { id: 'java',        label: 'Java',                  icon: '☕', color: '#e74c3c', desc: 'Orientação a objetos com Java' },
+  // { id: 'english',     label: 'Inglês Técnico',        icon: '🇺🇸', color: '#27ae60', desc: 'Vocabulário e gramática para TI' },
+  // { id: 'networking',  label: 'Redes de Computadores', icon: '🔗', color: '#16a085', desc: 'Protocolos, topologias e infraestrutura' },
+  // { id: 'maintenance', label: 'Manutenção de PC',      icon: '🔧', color: '#8e44ad', desc: 'Hardware, diagnóstico e reparo' },
 ];
