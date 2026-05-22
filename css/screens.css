@@ -64,6 +64,7 @@
 .hm-topbar{background:var(--s1);border-bottom:1px solid var(--bd);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .hm-user-info{display:flex;align-items:center;gap:10px}
 .hm-av-wrap{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#a07840);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.88rem;color:#0b0b0d;border:2px solid var(--gold);overflow:hidden;flex-shrink:0}
+.hm-av-wrap img{width:100%;height:100%;object-fit:cover;display:block}
 .hm-uname{font-size:.86rem;font-weight:700;line-height:1}
 .hm-uplan{font-family:'Share Tech Mono',monospace;font-size:.5rem;letter-spacing:2px;margin-top:2px}
 .hm-uplan.gold{color:var(--gold)}.hm-uplan.dim{color:var(--t3)}
