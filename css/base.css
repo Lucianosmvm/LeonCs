@@ -41,9 +41,9 @@ button:active{transform:scale(.96)}
 .btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
 .btn-green{background:var(--green);color:#fff}
 .btn-dim{background:var(--s1);color:var(--text);border:1px solid var(--bd)}
-.btn-back{background:rgba(255,255,255,.08);color:var(--t2);font-size:1.4rem;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.12);flex-shrink:0;cursor:pointer;transition:background .2s,color .2s;line-height:1;display:inline-flex;align-items:center;justify-content:center}
+.btn-back{background:rgba(255,255,255,.08);color:var(--t2);font-size:1.2rem;width:36px;height:34px;padding:0;border-radius:8px;border:1px solid rgba(255,255,255,.12);flex-shrink:0;cursor:pointer;transition:background .2s,color .2s;line-height:1;display:inline-flex;align-items:center;justify-content:center}
 .btn-back:hover{background:rgba(255,255,255,.15);color:var(--text)}
-.btn-back2{background:rgba(255,255,255,.08);color:var(--t2);font-size:1.4rem;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.12);cursor:pointer;transition:background .2s,color .2s;line-height:1;display:inline-flex;align-items:center;justify-content:center}
+.btn-back2{background:rgba(255,255,255,.08);color:var(--t2);font-size:1.2rem;width:36px;height:34px;padding:0;border-radius:8px;border:1px solid rgba(255,255,255,.12);cursor:pointer;transition:background .2s,color .2s;line-height:1;display:inline-flex;align-items:center;justify-content:center}
 .btn-back2:hover{background:rgba(255,255,255,.15);color:var(--text)}
 
 /* ── HEARTS ── */
