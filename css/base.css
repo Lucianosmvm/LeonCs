@@ -172,6 +172,10 @@ input.err{border-color:var(--red)}
 .ac-check{font-size:1.1rem;color:var(--green);font-weight:700;flex-shrink:0}
 
 /* ── RANKING ── */
+.rk-tabs{display:flex;gap:6px;padding:10px 16px 0;overflow-x:auto;scrollbar-width:none}
+.rk-tabs::-webkit-scrollbar{display:none}
+.rk-tab{flex-shrink:0;padding:5px 12px;border-radius:20px;border:1px solid var(--bd);background:var(--s1);color:var(--t2);font-family:'Share Tech Mono',monospace;font-size:.72rem;cursor:pointer;transition:all .15s}
+.rk-tab.rk-tab-active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:700}
 .rk-sub{padding:8px 20px 4px;color:var(--t3);font-family:'Share Tech Mono',monospace;font-size:.72rem;letter-spacing:2px}
 .rk-list{padding:0 16px 24px;display:flex;flex-direction:column;gap:8px}
 .rk-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--s1);border-radius:var(--r);border:1px solid var(--bd)}

@@ -123,30 +123,79 @@ function refreshHome() {
   refreshDeskSidebar();
 }
 
-// ── Ranking Global ──
+// ── Ranking ──
 
-async function refreshRank() {
+let _rkTab = 'global';
+let _rkCache = null;
+
+function _buildRkTabs() {
+  const tabs = document.getElementById('rk-tabs');
+  if (!tabs) return;
+  const all = [{ id: 'global', label: '🌐 Global' }, ...SUBJECTS.map(s => ({ id: s.id, label: `${s.icon} ${s.label}` }))];
+  tabs.innerHTML = all.map(t =>
+    `<button class="rk-tab${_rkTab === t.id ? ' rk-tab-active' : ''}" onclick="setRkTab('${t.id}')">${t.label}</button>`
+  ).join('');
+}
+
+function setRkTab(tab) {
+  _rkTab = tab;
+  _buildRkTabs();
+  _renderRkEntries(_rkCache || []);
+}
+
+function _renderRkEntries(entries) {
   const body = document.getElementById('rk-list');
+  const label = document.getElementById('rk-sub-label');
   if (!body) return;
-  body.innerHTML = '<div class="rk-loading">// CARREGANDO RANKING...</div>';
-  const entries = await loadRanking();
-  if (!entries.length) {
-    body.innerHTML = '<div class="rk-empty">Nenhum agente no ranking ainda.<br>Complete uma missão para aparecer aqui!</div>';
+
+  let filtered;
+  let xpKey;
+  if (_rkTab === 'global') {
+    filtered = [...entries].sort((a, b) => b.xp - a.xp);
+    xpKey = 'xp';
+    if (label) label.textContent = '// TOP AGENTES · CLASSIFICAÇÃO POR XP GLOBAL';
+  } else {
+    const subj = SUBJECTS.find(s => s.id === _rkTab);
+    filtered = entries
+      .filter(e => e.subjectDone && e.subjectDone[_rkTab] > 0)
+      .sort((a, b) => (b.subjectDone?.[_rkTab] || 0) - (a.subjectDone?.[_rkTab] || 0));
+    xpKey = null;
+    if (label) label.textContent = `// TOP AGENTES · ${subj ? subj.label.toUpperCase() : _rkTab.toUpperCase()}`;
+  }
+
+  if (!filtered.length) {
+    body.innerHTML = '<div class="rk-empty">Nenhum agente nesta matéria ainda.<br>Complete uma missão para aparecer aqui!</div>';
     return;
   }
+
   const myUid = window._currentUser?.uid;
-  body.innerHTML = entries.map((e, i) => {
+  body.innerHTML = filtered.map((e, i) => {
     const isMe  = e.uid === myUid;
     const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`;
+    const xpVal = xpKey ? e.xp : null;
+    const doneVal = _rkTab === 'global' ? e.done : (e.subjectDone?.[_rkTab] || 0);
     return `<div class="rk-row${isMe ? ' rk-me' : ''}">
       <div class="rk-pos">${medal}</div>
       <div class="rk-info">
         <div class="rk-name">${e.name}${isMe ? '<span class="rk-you">VOCÊ</span>' : ''}</div>
-        <div class="rk-meta">${e.done} missões · ${e.streak} dias 🎯</div>
+        <div class="rk-meta">${doneVal} missões${_rkTab === 'global' ? ` · ${e.streak} dias 🎯` : ''}</div>
       </div>
-      <div class="rk-xp">${e.xp} XP</div>
+      ${xpVal !== null ? `<div class="rk-xp">${xpVal} XP</div>` : `<div class="rk-xp">${doneVal} ✓</div>`}
     </div>`;
   }).join('');
+}
+
+async function refreshRank() {
+  const body = document.getElementById('rk-list');
+  if (!body) return;
+  _buildRkTabs();
+  body.innerHTML = '<div class="rk-loading">// CARREGANDO RANKING...</div>';
+  _rkCache = await loadRanking();
+  if (!_rkCache.length) {
+    body.innerHTML = '<div class="rk-empty">Nenhum agente no ranking ainda.<br>Complete uma missão para aparecer aqui!</div>';
+    return;
+  }
+  _renderRkEntries(_rkCache);
 }
 
 // ── Map / Missões ──

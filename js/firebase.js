@@ -120,8 +120,17 @@ function syncCloud() {
     lastLogin: window._fb.serverTimestamp(),
   }).catch(() => {});
   // Atualiza entrada pública no ranking (só dados não-sensíveis)
+  const subjectDoneMap = S.subjectDone || {};
+  const subjectXp = {};
+  SUBJECTS.forEach(s => {
+    if (s.id === 'csharp') return;
+    subjectXp[s.id] = (subjectDoneMap[s.id] || []).length;
+  });
   window._fb.setDoc(window._fb.doc(_fbDb, 'ranking', uid), {
-    name, xp: S.xp, streak: S.streak, done: S.done.length,
+    name, xp: S.xp, streak: S.streak,
+    done: S.done.length + Object.values(subjectDoneMap).reduce((a, v) => a + v.length, 0),
+    subjectDone: Object.fromEntries(SUBJECTS.map(s => [s.id, s.id === 'csharp' ? S.done.length : (subjectDoneMap[s.id] || []).length])),
+    subjectXp,
     updatedAt: window._fb.serverTimestamp(),
   }).catch(() => {});
 }
