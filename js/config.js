@@ -28,6 +28,8 @@ const LV_NAMES = ['RECRUTA', 'AGENTE', 'VETERANO', 'ESPECIALISTA', 'MESTRE', 'LE
 const SUBJECTS = [
   { id: 'csharp',      label: 'C#',                    icon: '🎮', color: '#9b59b6', desc: 'Aprenda C# do zero com missões temáticas' },
   { id: 'python',      label: 'Python',                icon: '🐍', color: '#3498db', desc: 'Lógica e automação com Python' },
+  { id: 'webdev',      label: 'Desenvolvimento Web',   icon: '🌐', color: '#e67e22', desc: 'Sites com HTML, CSS e JavaScript' },
+  { id: 'javascript',  label: 'JavaScript',            icon: '🟨', color: '#f7df1e', desc: 'A linguagem da web, do zero ao assíncrono' },
   // { id: 'html',        label: 'HTML / CSS',            icon: '🌐', color: '#e67e22', desc: 'Criação de páginas web' },
   // { id: 'java',        label: 'Java',                  icon: '☕', color: '#e74c3c', desc: 'Orientação a objetos com Java' },
   // { id: 'english',     label: 'Inglês Técnico',        icon: '🇺🇸', color: '#27ae60', desc: 'Vocabulário e gramática para TI' },
