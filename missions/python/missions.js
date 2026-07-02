@@ -21,4 +21,34 @@ var MISSIONS_PYTHON = [
   MISSION_PYTHON_17,  // premium — Arquivos
   MISSION_PYTHON_18,  // premium — Orientação a Objetos
   MISSION_PYTHON_19,  // premium — Projeto Final
+  MISSION_PYTHON_20,  // premium — Decorators
+  MISSION_PYTHON_21,  // premium — Generators e Iterators
+  MISSION_PYTHON_22,  // premium — Expressões Regulares
+  MISSION_PYTHON_23,  // premium — Data e Tempo
+  MISSION_PYTHON_24,  // premium — JSON e APIs
+  MISSION_PYTHON_25,  // premium — Programação Funcional
+  MISSION_PYTHON_26,  // premium — Testes Automatizados
+  MISSION_PYTHON_27,  // premium — Pip e Ambientes Virtuais
+  MISSION_PYTHON_28,  // premium — Concorrência e Async
+  MISSION_PYTHON_29,  // premium — Boas Práticas e PEP 8
+  MISSION_PYTHON_30,  // premium — Type Hints
+  MISSION_PYTHON_31,  // premium — Dataclasses
+  MISSION_PYTHON_32,  // premium — Enums
+  MISSION_PYTHON_33,  // premium — Context Managers
+  MISSION_PYTHON_34,  // premium — Collections
+  MISSION_PYTHON_35,  // premium — Itertools
+  MISSION_PYTHON_36,  // premium — Pathlib
+  MISSION_PYTHON_37,  // premium — Logging
+  MISSION_PYTHON_38,  // premium — Argparse (CLI)
+  MISSION_PYTHON_39,  // premium — Slicing Avançado
+  MISSION_PYTHON_40,  // premium — Comprehensions Avançadas
+  MISSION_PYTHON_41,  // premium — Métodos de String
+  MISSION_PYTHON_42,  // premium — Math e Random
+  MISSION_PYTHON_43,  // premium — Exceções Avançadas
+  MISSION_PYTHON_44,  // premium — Herança e Super
+  MISSION_PYTHON_45,  // premium — Métodos Mágicos (Dunder)
+  MISSION_PYTHON_46,  // premium — Closures e Escopo
+  MISSION_PYTHON_47,  // premium — CSV e Pickle
+  MISSION_PYTHON_48,  // premium — Performance
+  MISSION_PYTHON_49,  // premium — Segurança e Validação
 ];
